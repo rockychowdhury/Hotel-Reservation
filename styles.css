@@ -5,6 +5,8 @@
     box-sizing: border-box;
 }
 
+
+
 body {
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
@@ -728,4 +730,9 @@ body {
     .action-buttons {
         flex-direction: column;
     }
+}
+
+.links{
+    text-decoration: none;
+    color:inherit
 }

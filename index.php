@@ -18,10 +18,7 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#rooms">Rooms</a></li>
                 <li><a href="#services">Services</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="nav-toggle">
                 <span></span>
@@ -39,7 +36,7 @@
             <p class="hero-subtitle">Experience unparalleled comfort and luxury in the heart of the city</p>
             <div class="hero-buttons">
                 <a href="#booking" class="btn btn-primary">Book Now</a>
-                <a href="#rooms" class="btn btn-secondary">Explore Rooms</a>
+                <a href="#services" class="btn btn-secondary">Explore Services</a>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -145,13 +142,6 @@
                     <p>Handle billing, payments, and financial records</p>
                 </div>
                 
-                <div class="service-card" onclick="window.location.href='reports.php'">
-                    <div class="service-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <h3>Reports & Analytics</h3>
-                    <p>View comprehensive reports and analytics</p>
-                </div>
             </div>
         </div>
     </section>

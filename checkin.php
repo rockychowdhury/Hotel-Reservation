@@ -160,19 +160,6 @@ $checkout_query = "SELECT r.reservation_id, r.check_in_date, r.check_out_date, r
                   ORDER BY r.check_out_date ASC";
 $checkout_result = mysqli_query($conn, $checkout_query);
 
-// Get recent check-in/out history
-$history_query = "SELECT r.reservation_id, r.check_in_date, r.check_out_date, r.status,
-                 g.first_name, g.last_name, rt.type_name, rm.room_number,
-                 cc.actual_checkin, cc.actual_checkout, cc.early_checkin_fee, 
-                 cc.late_checkout_fee, cc.damage_charges
-                 FROM reservations r
-                 JOIN guests g ON r.guest_id = g.guest_id
-                 JOIN rooms rm ON r.room_id = rm.room_id
-                 JOIN room_types rt ON rm.type_id = rt.type_id
-                 LEFT JOIN checkin_checkout cc ON r.reservation_id = cc.reservation_id
-                 WHERE r.status IN ('checked_in', 'checked_out')
-                 ORDER BY cc.actual_checkin DESC LIMIT 20";
-$history_result = mysqli_query($conn, $history_query);
 ?>
 
 <!DOCTYPE html>
@@ -308,57 +295,7 @@ $history_result = mysqli_query($conn, $history_query);
             <?php endif; ?>
         </div>
 
-        <!-- Check-in/out History -->
-        <div class="form-container">
-            <h2 class="form-title">
-                <i class="fas fa-history"></i>
-                Recent Check-in/out History
-            </h2>
-
-            <?php if (mysqli_num_rows($history_result) > 0): ?>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Guest</th>
-                            <th>Room</th>
-                            <th>Check-in</th>
-                            <th>Check-out</th>
-                            <th>Additional Fees</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($history = mysqli_fetch_assoc($history_result)): ?>
-                            <tr>
-                                <td><?php echo $history['reservation_id']; ?></td>
-                                <td><?php echo $history['first_name'] . ' ' . $history['last_name']; ?></td>
-                                <td><?php echo $history['type_name'] . ' (' . $history['room_number'] . ')'; ?></td>
-                                <td>
-                                    <?php echo $history['actual_checkin'] ? date('M d, H:i', strtotime($history['actual_checkin'])) : '-'; ?>
-                                </td>
-                                <td>
-                                    <?php echo $history['actual_checkout'] ? date('M d, H:i', strtotime($history['actual_checkout'])) : '-'; ?>
-                                </td>
-                                <td>
-                                    <?php 
-                                    $total_fees = ($history['early_checkin_fee'] ?? 0) + ($history['late_checkout_fee'] ?? 0) + ($history['damage_charges'] ?? 0);
-                                    echo $total_fees > 0 ? '$' . number_format($total_fees, 2) : '-';
-                                    ?>
-                                </td>
-                                <td>
-                                    <span class="status-badge status-<?php echo $history['status']; ?>">
-                                        <?php echo ucfirst(str_replace('_', ' ', $history['status'])); ?>
-                                    </span>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p style="text-align: center; color: #666; margin: 2rem 0;">No check-in/out history found.</p>
-            <?php endif; ?>
-        </div>
+        
     </div>
 
     <!-- Check-in Modal -->

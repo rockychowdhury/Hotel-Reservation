@@ -107,15 +107,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $room_types_query = "SELECT * FROM room_types ORDER BY base_price";
 $room_types_result = mysqli_query($conn, $room_types_query);
 
-// Get recent reservations
-$recent_reservations = "SELECT r.reservation_id, r.check_in_date, r.check_out_date, r.total_amount, r.status,
-                       g.first_name, g.last_name, g.email, rt.type_name, rm.room_number
-                       FROM reservations r
-                       JOIN guests g ON r.guest_id = g.guest_id
-                       JOIN rooms rm ON r.room_id = rm.room_id
-                       JOIN room_types rt ON rm.type_id = rt.type_id
-                       ORDER BY r.created_at DESC LIMIT 10";
-$reservations_result = mysqli_query($conn, $recent_reservations);
 ?>
 
 <!DOCTYPE html>
@@ -134,10 +125,10 @@ $reservations_result = mysqli_query($conn, $recent_reservations);
         <div class="nav-container">
             <div class="logo">
                 <i class="fas fa-hotel"></i>
-                <span>Luxury Haven</span>
+                <a class="links" href="index.php"><span>Luxury Haven</span></a>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.php">Home</a></li>
                 <li><a href="reservation.php">Reservations</a></li>
                 <li><a href="checkin.php">Check-in/Out</a></li>
                 <li><a href="rooms.php">Rooms</a></li>
@@ -260,50 +251,6 @@ $reservations_result = mysqli_query($conn, $recent_reservations);
             </form>
         </div>
 
-        <!-- Recent Reservations -->
-        <div class="form-container">
-            <h2 class="form-title">
-                <i class="fas fa-list"></i>
-                Recent Reservations
-            </h2>
-
-            <?php if (mysqli_num_rows($reservations_result) > 0): ?>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Guest</th>
-                            <th>Email</th>
-                            <th>Room</th>
-                            <th>Check-in</th>
-                            <th>Check-out</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($reservation = mysqli_fetch_assoc($reservations_result)): ?>
-                            <tr>
-                                <td><?php echo $reservation['reservation_id']; ?></td>
-                                <td><?php echo $reservation['first_name'] . ' ' . $reservation['last_name']; ?></td>
-                                <td><?php echo $reservation['email']; ?></td>
-                                <td><?php echo $reservation['type_name'] . ' (' . $reservation['room_number'] . ')'; ?></td>
-                                <td><?php echo date('M d, Y', strtotime($reservation['check_in_date'])); ?></td>
-                                <td><?php echo date('M d, Y', strtotime($reservation['check_out_date'])); ?></td>
-                                <td>$<?php echo number_format($reservation['total_amount'], 2); ?></td>
-                                <td>
-                                    <span class="status-badge status-<?php echo $reservation['status']; ?>">
-                                        <?php echo ucfirst($reservation['status']); ?>
-                                    </span>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p style="text-align: center; color: #666; margin: 2rem 0;">No reservations found.</p>
-            <?php endif; ?>
-        </div>
     </div>
 
     <script>
