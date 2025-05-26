@@ -40,8 +40,8 @@
             to { opacity: 1; transform: translateX(0); }
         }
         .hero-bg {
-            background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(52, 152, 219, 0.8)),
-                        url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80') center/cover;
+            background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+            url('https://i.ibb.co/9m7Cwr0G/1407953244000-177513283.jpg') center/cover;
         }
         .glass-effect {
             backdrop-filter: blur(10px);
@@ -397,6 +397,9 @@
                         <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
                             <i class="fab fa-instagram"></i>
                         </a>
+                        <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -409,6 +412,7 @@
                         <li><a href="guests.php" class="text-gray-300 hover:text-primary transition-colors">Guest Services</a></li>
                         <li><a href="checkin.php" class="text-gray-300 hover:text-primary transition-colors">Check-in/Check-out</a></li>
                         <li><a href="billing.php" class="text-gray-300 hover:text-primary transition-colors">Billing</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-primary transition-colors">About Us</a></li>
                     </ul>
                 </div>
 
@@ -420,3 +424,171 @@
                             <i class="fas fa-phone text-primary"></i>
                             <span class="text-gray-300">+1 (555) 123-4567</span>
                         </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-envelope text-primary"></i>
+                            <span class="text-gray-300">info@luxuryhaven.com</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <span class="text-gray-300">123 Luxury Street<br>Downtown District<br>New York, NY 10001</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-clock text-primary"></i>
+                            <span class="text-gray-300">24/7 Front Desk Service</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newsletter Signup -->
+            <div class="border-t border-gray-600 mt-12 pt-8">
+                <div class="max-w-md mx-auto text-center">
+                    <h4 class="text-xl font-bold mb-4">Stay Updated</h4>
+                    <p class="text-gray-300 mb-4">Subscribe to our newsletter for exclusive offers and updates</p>
+                    <form class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" placeholder="Enter your email" 
+                               class="flex-1 px-4 py-3 rounded-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:outline-none transition-colors">
+                        <button type="submit" 
+                                class="bg-primary hover:bg-red-600 text-white px-6 py-3 rounded-full font-semibold transition-colors whitespace-nowrap">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-600 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-300 text-center md:text-left mb-4 md:mb-0">
+                        <p>&copy; 2024 Luxury Haven Hotel. All rights reserved.</p>
+                    </div>
+                    <div class="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
+                        <a href="#" class="text-gray-300 hover:text-primary transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-gray-300 hover:text-primary transition-colors">Terms of Service</a>
+                        <a href="#" class="text-gray-300 hover:text-primary transition-colors">Cookie Policy</a>
+                        <a href="#" class="text-gray-300 hover:text-primary transition-colors">Accessibility</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-primary hover:bg-red-600 text-white w-12 h-12 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 transform hover:scale-110 z-50">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        // Back to top button
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Set minimum date for booking form
+        const today = new Date().toISOString().split('T')[0];
+        const checkinInput = document.querySelector('input[name="checkin"]');
+        const checkoutInput = document.querySelector('input[name="checkout"]');
+        
+        if (checkinInput && checkoutInput) {
+            checkinInput.setAttribute('min', today);
+            
+            checkinInput.addEventListener('change', function() {
+                const checkinDate = new Date(this.value);
+                checkinDate.setDate(checkinDate.getDate() + 1);
+                const minCheckout = checkinDate.toISOString().split('T')[0];
+                checkoutInput.setAttribute('min', minCheckout);
+                
+                if (checkoutInput.value && checkoutInput.value <= this.value) {
+                    checkoutInput.value = minCheckout;
+                }
+            });
+        }
+
+        // Navbar background on scroll
+        const navbar = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 100) {
+                navbar.classList.add('backdrop-blur-md');
+            } else {
+                navbar.classList.remove('backdrop-blur-md');
+            }
+        });
+
+        // Newsletter form submission
+        const newsletterForm = document.querySelector('footer form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                if (email) {
+                    alert('Thank you for subscribing to our newsletter!');
+                    this.reset();
+                }
+            });
+        }
+
+        // Animation on scroll (simple implementation)
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.group, .animate-fade-in-up').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
