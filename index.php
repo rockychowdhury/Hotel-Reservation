@@ -4,267 +4,419 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luxury Haven Hotel - Your Perfect Stay</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e74c3c',
+                        secondary: '#3498db',
+                        dark: '#2c3e50',
+                        light: '#ecf0f1'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'slide-in-left': 'slideInLeft 0.6s ease-out',
+                        'slide-in-right': 'slideInRight 0.6s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(52, 152, 219, 0.8)),
+                        url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80') center/cover;
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #e74c3c, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-hotel"></i>
-                <span>Luxury Haven</span>
+    <nav class="fixed top-0 w-full z-50 glass-effect shadow-lg transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-hotel text-primary text-2xl"></i>
+                    <span class="text-xl font-bold text-dark">Luxury Haven</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Home</a>
+                    <a href="#rooms" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Rooms</a>
+                    <a href="#services" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Services</a>
+                    <a href="#about" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">About</a>
+                    <a href="#contact" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Contact</a>
+                    <a href="reservation.php" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg">Book Now</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
-            <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#services">Services</a></li>
-            </ul>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Home</a>
+                <a href="#rooms" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Rooms</a>
+                <a href="#services" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Services</a>
+                <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">About</a>
+                <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Contact</a>
+                <a href="reservation.php" class="block mx-3 mt-3 bg-primary text-white text-center py-2 rounded-full hover:bg-red-600 transition-colors">Book Now</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">Welcome to Luxury Haven</h1>
-            <p class="hero-subtitle">Experience unparalleled comfort and luxury in the heart of the city</p>
-            <div class="hero-buttons">
-                <a href="#booking" class="btn btn-primary">Book Now</a>
-                <a href="#services" class="btn btn-secondary">Explore Services</a>
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative">
+        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+        <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in-up">Welcome to <span class="block gradient-text">Luxury Haven</span></h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in-up animation-delay-200">Experience unparalleled comfort and luxury in the heart of the city</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-400">
+                <a href="#booking" class="bg-primary hover:bg-red-600 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl">
+                    Book Your Stay
+                </a>
+                <a href="#rooms" class="border-2 border-white text-white hover:bg-white hover:text-dark px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                    View Rooms
+                </a>
             </div>
         </div>
-        <div class="scroll-indicator">
-            <div class="scroll-arrow"></div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
+            <div class="w-6 h-6 border-r-2 border-b-2 border-white transform rotate-45"></div>
         </div>
     </section>
 
     <!-- Quick Booking Widget -->
-    <section id="booking" class="booking-widget">
-        <div class="container">
-            <div class="booking-form-container">
-                <h3>Quick Reservation</h3>
-                <form class="booking-form" id="quickBookingForm">
-                    <div class="form-group">
-                        <label>Check-in Date</label>
-                        <input type="date" name="checkin" required>
+    <section id="booking" class="py-20 bg-gradient-to-r from-gray-50 to-blue-50 -mt-20 relative z-20">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12 transform -translate-y-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-dark mb-8">Quick Reservation</h2>
+                <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="quickBookingForm">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Check-in Date</label>
+                        <input type="date" name="checkin" required 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
                     </div>
-                    <div class="form-group">
-                        <label>Check-out Date</label>
-                        <input type="date" name="checkout" required>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Check-out Date</label>
+                        <input type="date" name="checkout" required 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
                     </div>
-                    <div class="form-group">
-                        <label>Room Type</label>
-                        <select name="room_type" required>
-                            <option value="">Select Room Type</option>
-                            <option value="1">Single Room - $99.99/night</option>
-                            <option value="2">Double Room - $149.99/night</option>
-                            <option value="3">Suite - $299.99/night</option>
-                            <option value="4">Family Room - $199.99/night</option>
-                            <option value="5">Presidential Suite - $599.99/night</option>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Guests</label>
+                        <select name="guests" 
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5+ Guests</option>
                         </select>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Adults</label>
-                            <select name="adults">
-                                <option value="1">1 Adult</option>
-                                <option value="2">2 Adults</option>
-                                <option value="3">3 Adults</option>
-                                <option value="4">4 Adults</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Children</label>
-                            <select name="children">
-                                <option value="0">0 Children</option>
-                                <option value="1">1 Child</option>
-                                <option value="2">2 Children</option>
-                                <option value="3">3 Children</option>
-                            </select>
-                        </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Room Type</label>
+                        <select name="room_type" required 
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
+                            <option value="">Select Room</option>
+                            <option value="1">Single Room - $99/night</option>
+                            <option value="2">Double Room - $149/night</option>
+                            <option value="3">Suite - $299/night</option>
+                            <option value="4">Family Room - $199/night</option>
+                            <option value="5">Presidential Suite - $599/night</option>
+                        </select>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="window.location.href='reservation.php'">
-                        Check Availability
-                    </button>
+                    <div class="md:col-span-2 lg:col-span-4">
+                        <button type="button" onclick="window.location.href='reservation.php'" 
+                                class="w-full bg-gradient-to-r from-primary to-red-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-red-600 hover:to-primary transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-search mr-2"></i>Check Availability
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <h2 class="section-title">Hotel Management System</h2>
-            <div class="services-grid">
-                <div class="service-card" onclick="window.location.href='reservation.php'">
-                    <div class="service-icon">
-                        <i class="fas fa-calendar-check"></i>
+    <!-- Room Types Preview -->
+    <section id="rooms" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-4">Our Luxurious Rooms</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Experience comfort and elegance in our carefully designed accommodations</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Single Room -->
+                <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="h-64 bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+                        <i class="fas fa-bed text-6xl text-white"></i>
                     </div>
-                    <h3>Make Reservation</h3>
-                    <p>Book your perfect room with our easy reservation system</p>
-                </div>
-                
-                <div class="service-card" onclick="window.location.href='checkin.php'">
-                    <div class="service-icon">
-                        <i class="fas fa-door-open"></i>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-2">Single Room</h3>
+                        <p class="text-gray-600 mb-4">Perfect for solo travelers seeking comfort and style</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-primary">$99<span class="text-sm text-gray-500">/night</span></span>
+                            <a href="rooms.php" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors">View Details</a>
+                        </div>
                     </div>
-                    <h3>Check-in / Check-out</h3>
-                    <p>Seamless check-in and check-out process for guests</p>
                 </div>
-                
-                <div class="service-card" onclick="window.location.href='rooms.php'">
-                    <div class="service-icon">
-                        <i class="fas fa-bed"></i>
+
+                <!-- Double Room -->
+                <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="h-64 bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+                        <i class="fas fa-bed text-6xl text-white"></i>
                     </div>
-                    <h3>Room Management</h3>
-                    <p>View and manage room availability and status</p>
-                </div>
-                
-                <div class="service-card" onclick="window.location.href='guests.php'">
-                    <div class="service-icon">
-                        <i class="fas fa-users"></i>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-2">Double Room</h3>
+                        <p class="text-gray-600 mb-4">Spacious accommodation for couples or friends</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-primary">$149<span class="text-sm text-gray-500">/night</span></span>
+                            <a href="rooms.php" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors">View Details</a>
+                        </div>
                     </div>
-                    <h3>Guest Management</h3>
-                    <p>Manage guest information and profiles</p>
                 </div>
-                
-                <div class="service-card" onclick="window.location.href='billing.php'">
-                    <div class="service-icon">
-                        <i class="fas fa-receipt"></i>
+
+                <!-- Suite -->
+                <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="h-64 bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-crown text-6xl text-white"></i>
                     </div>
-                    <h3>Billing & Payment</h3>
-                    <p>Handle billing, payments, and financial records</p>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-2">Luxury Suite</h3>
+                        <p class="text-gray-600 mb-4">Ultimate luxury with premium amenities</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-primary">$299<span class="text-sm text-gray-500">/night</span></span>
+                            <a href="rooms.php" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors">View Details</a>
+                        </div>
+                    </div>
                 </div>
-                
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose Luxury Haven?</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-wifi"></i>
+    <!-- Management System Services -->
+    <section id="services" class="py-20 bg-gradient-to-r from-gray-50 to-blue-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-4">Hotel Management System</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Streamlined operations for the perfect guest experience</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Reservation Management -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group" onclick="window.location.href='reservation.php'">
+                    <div class="w-16 h-16 bg-gradient-to-r from-primary to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-calendar-check text-2xl text-white"></i>
                     </div>
-                    <h4>Free Wi-Fi</h4>
-                    <p>High-speed internet throughout the hotel</p>
-                </div>
-                
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-swimming-pool"></i>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Make Reservation</h3>
+                    <p class="text-gray-600 mb-6">Easy online booking system with real-time availability</p>
+                    <div class="flex items-center text-primary font-semibold">
+                        <span>Book Now</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
                     </div>
-                    <h4>Swimming Pool</h4>
-                    <p>Relax in our beautiful outdoor pool</p>
                 </div>
-                
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-utensils"></i>
+
+                <!-- Check-in/Check-out -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group" onclick="window.location.href='checkin.php'">
+                    <div class="w-16 h-16 bg-gradient-to-r from-secondary to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-door-open text-2xl text-white"></i>
                     </div>
-                    <h4>Fine Dining</h4>
-                    <p>World-class cuisine at our restaurant</p>
-                </div>
-                
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-car"></i>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Check-in / Check-out</h3>
+                    <p class="text-gray-600 mb-6">Seamless arrival and departure process management</p>
+                    <div class="flex items-center text-secondary font-semibold">
+                        <span>Manage</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
                     </div>
-                    <h4>Valet Parking</h4>
-                    <p>Complimentary valet parking service</p>
                 </div>
+
+                <!-- Room Management -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group" onclick="window.location.href='rooms.php'">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-bed text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Room Management</h3>
+                    <p class="text-gray-600 mb-6">Monitor room status, availability, and maintenance</p>
+                    <div class="flex items-center text-green-600 font-semibold">
+                        <span>View Rooms</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Guest Management -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group" onclick="window.location.href='guests.php'">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-users text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Guest Management</h3>
+                    <p class="text-gray-600 mb-6">Comprehensive guest profiles and service history</p>
+                    <div class="flex items-center text-purple-600 font-semibold">
+                        <span>Manage Guests</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Billing & Payment -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group" onclick="window.location.href='billing.php'">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-receipt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Billing & Payment</h3>
+                    <p class="text-gray-600 mb-6">Automated billing and secure payment processing</p>
+                    <div class="flex items-center text-orange-600 font-semibold">
+                        <span>View Billing</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Reports & Analytics -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group">
+                    <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-chart-bar text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Reports & Analytics</h3>
+                    <p class="text-gray-600 mb-6">Detailed insights and performance analytics</p>
+                    <div class="flex items-center text-indigo-600 font-semibold">
+                        <span>View Reports</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hotel Features -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-4">Why Choose Luxury Haven?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover the amenities and services that make us the preferred choice</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-wifi text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-dark mb-2">Free Wi-Fi</h4>
+                    <p class="text-gray-600">High-speed internet throughout the hotel premises</p>
+                </div>
+
+                <div class="text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-swimming-pool text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-dark mb-2">Swimming Pool</h4>
+                    <p class="text-gray-600">Relax in our beautiful rooftop infinity pool</p>
+                </div>
+
+                <div class="text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-utensils text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-dark mb-2">Fine Dining</h4>
+                    <p class="text-gray-600">World-class cuisine at our award-winning restaurant</p>
+                </div>
+
+                <div class="text-center group">
+                    <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-car text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-dark mb-2">Valet Parking</h4>
+                    <p class="text-gray-600">Complimentary valet parking for all guests</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-gradient-to-r from-primary to-red-600 text-white">
+        <div class="max-w-4xl mx-auto text-center px-4">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready for Your Perfect Stay?</h2>
+            <p class="text-xl mb-8 opacity-90">Book now and experience luxury like never before</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="reservation.php" class="bg-white text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    Make Reservation
+                </a>
+                <a href="#contact" class="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                    Contact Us
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <i class="fas fa-hotel"></i>
-                        <span>Luxury Haven</span>
+    <footer id="contact" class="bg-dark text-white py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Hotel Info -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-hotel text-primary text-3xl"></i>
+                        <span class="text-2xl font-bold">Luxury Haven</span>
                     </div>
-                    <p>Experience luxury and comfort at its finest. Your perfect stay awaits.</p>
+                    <p class="text-gray-300 mb-6 max-w-md">Experience luxury and comfort at its finest. Your perfect stay awaits at the heart of the city with world-class amenities and exceptional service.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="reservation.php">Make Reservation</a></li>
-                        <li><a href="rooms.php">View Rooms</a></li>
-                        <li><a href="guests.php">Guest Services</a></li>
-                        <li><a href="contact.php">Contact Us</a></li>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="reservation.php" class="text-gray-300 hover:text-primary transition-colors">Make Reservation</a></li>
+                        <li><a href="rooms.php" class="text-gray-300 hover:text-primary transition-colors">View Rooms</a></li>
+                        <li><a href="guests.php" class="text-gray-300 hover:text-primary transition-colors">Guest Services</a></li>
+                        <li><a href="checkin.php" class="text-gray-300 hover:text-primary transition-colors">Check-in/Check-out</a></li>
+                        <li><a href="billing.php" class="text-gray-300 hover:text-primary transition-colors">Billing</a></li>
                     </ul>
                 </div>
-                
-                <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+1 (555) 123-4567</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>info@luxuryhaven.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>123 Luxury Street, City Center</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 Luxury Haven Hotel. All rights reserved. | DBMS Project</p>
-            </div>
-        </div>
-    </footer>
 
-    <script>
-        // Mobile navigation toggle
-        const navToggle = document.querySelector('.nav-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            navToggle.classList.toggle('active');
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Set minimum date for check-in to today
-        const today = new Date().toISOString().split('T')[0];
-        document.querySelector('input[name="checkin"]').setAttribute('min', today);
-        
-        // Update checkout minimum date when checkin changes
-        document.querySelector('input[name="checkin"]').addEventListener('change', function() {
-            const checkinDate = new Date(this.value);
-            checkinDate.setDate(checkinDate.getDate() + 1);
-            document.querySelector('input[name="checkout"]').setAttribute('min', checkinDate.toISOString().split('T')[0]);
-        });
-    </script>
-</body>
-</html>
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Contact Info</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-phone text-primary"></i>
+                            <span class="text-gray-300">+1 (555) 123-4567</span>
+                        </div>

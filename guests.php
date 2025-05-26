@@ -12,103 +12,61 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Handle form submissions
-$message = '';
-$error = '';
-
-// Add new guest
-if (isset($_POST['add_guest'])) {
-    try {
-        $stmt = $pdo->prepare("INSERT INTO guests (first_name, last_name, email, phone, address, id_number, date_of_birth) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([
-            $_POST['first_name'],
-            $_POST['last_name'],
-            $_POST['email'],
-            $_POST['phone'],
-            $_POST['address'],
-            $_POST['id_number'],
-            $_POST['date_of_birth']
-        ]);
-        $message = "Guest added successfully!";
-    } catch(PDOException $e) {
-        if ($e->getCode() == 23000) {
-            $error = "Email already exists. Please use a different email address.";
-        } else {
-            $error = "Error adding guest: " . $e->getMessage();
-        }
-    }
-}
-
-// Update guest
-if (isset($_POST['update_guest'])) {
-    try {
-        $stmt = $pdo->prepare("UPDATE guests SET first_name = ?, last_name = ?, email = ?, phone = ?, address = ?, id_number = ?, date_of_birth = ? WHERE guest_id = ?");
-        $stmt->execute([
-            $_POST['first_name'],
-            $_POST['last_name'],
-            $_POST['email'],
-            $_POST['phone'],
-            $_POST['address'],
-            $_POST['id_number'],
-            $_POST['date_of_birth'],
-            $_POST['guest_id']
-        ]);
-        $message = "Guest updated successfully!";
-    } catch(PDOException $e) {
-        if ($e->getCode() == 23000) {
-            $error = "Email already exists. Please use a different email address.";
-        } else {
-            $error = "Error updating guest: " . $e->getMessage();
-        }
-    }
-}
-
-// Delete guest
-if (isset($_GET['delete'])) {
-    try {
-        // Check if guest has any reservations
-        $check_stmt = $pdo->prepare("SELECT COUNT(*) FROM reservations WHERE guest_id = ?");
-        $check_stmt->execute([$_GET['delete']]);
-        $reservation_count = $check_stmt->fetchColumn();
-        
-        if ($reservation_count > 0) {
-            $error = "Cannot delete guest. Guest has existing reservations.";
-        } else {
-            $stmt = $pdo->prepare("DELETE FROM guests WHERE guest_id = ?");
-            $stmt->execute([$_GET['delete']]);
-            $message = "Guest deleted successfully!";
-        }
-    } catch(PDOException $e) {
-        $error = "Error deleting guest: " . $e->getMessage();
-    }
-}
-
-// Get guest for editing
-$edit_guest = null;
-if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare("SELECT * FROM guests WHERE guest_id = ?");
-    $stmt->execute([$_GET['edit']]);
-    $edit_guest = $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-// Search functionality
+// Search functionality for guests
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $search_query = '';
 $search_params = [];
 
 if (!empty($search)) {
-    $search_query = " WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phone LIKE ?";
+    $search_query = " WHERE g.first_name LIKE ? OR g.last_name LIKE ? OR g.email LIKE ? OR g.phone LIKE ?";
     $search_term = "%$search%";
     $search_params = [$search_term, $search_term, $search_term, $search_term];
 }
 
-// Fetch all guests with search
+// Fetch all guests with search and reservation count
 $stmt = $pdo->prepare("SELECT g.*, 
-    (SELECT COUNT(*) FROM reservations r WHERE r.guest_id = g.guest_id) as total_reservations,
-    (SELECT COUNT(*) FROM reservations r WHERE r.guest_id = g.guest_id AND r.status = 'confirmed') as confirmed_reservations
-    FROM guests g" . $search_query . " ORDER BY g.created_at DESC");
+    COUNT(r.reservation_id) as total_reservations
+    FROM guests g
+    LEFT JOIN reservations r ON g.guest_id = r.guest_id
+    " . $search_query . " 
+    GROUP BY g.guest_id 
+    ORDER BY g.created_at DESC");
 $stmt->execute($search_params);
 $guests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Get total counts for statistics
+$total_guests_stmt = $pdo->query("SELECT COUNT(*) FROM guests");
+$total_guests = $total_guests_stmt->fetchColumn();
+
+$total_reservations_stmt = $pdo->query("SELECT COUNT(*) FROM reservations");
+$total_reservations = $total_reservations_stmt->fetchColumn();
+
+// Fetch all reservations with guest and room details
+$reservations_search = isset($_GET['res_search']) ? $_GET['res_search'] : '';
+$res_search_query = '';
+$res_search_params = [];
+
+if (!empty($reservations_search)) {
+    $res_search_query = " WHERE g.first_name LIKE ? OR g.last_name LIKE ? OR g.email LIKE ? OR r.reservation_id LIKE ? OR rm.room_number LIKE ?";
+    $res_search_term = "%$reservations_search%";
+    $res_search_params = [$res_search_term, $res_search_term, $res_search_term, $res_search_term, $res_search_term];
+}
+
+$reservations_stmt = $pdo->prepare("SELECT r.*, 
+    CONCAT(g.first_name, ' ', g.last_name) as guest_name,
+    g.email as guest_email,
+    g.phone as guest_phone,
+    rm.room_number,
+    rt.type_name,
+    rt.base_price
+    FROM reservations r
+    JOIN guests g ON r.guest_id = g.guest_id
+    JOIN rooms rm ON r.room_id = rm.room_id
+    JOIN room_types rt ON rm.type_id = rt.type_id
+    " . $res_search_query . "
+    ORDER BY r.created_at DESC");
+$reservations_stmt->execute($res_search_params);
+$reservations = $reservations_stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -121,38 +79,51 @@ $guests = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .guest-stats {
+        .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
             margin: 2rem 0;
         }
         
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 15px;
+            padding: 2.5rem;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
         
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .stat-label {
-            font-size: 1rem;
+            font-size: 1.1rem;
             opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
         }
         
         .search-section {
             background: white;
             padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
         }
         
@@ -166,131 +137,184 @@ $guests = $stmt->fetchAll(PDO::FETCH_ASSOC);
             flex: 1;
         }
         
-        .guest-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .toggle-form-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .toggle-form-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-        
-        .guest-form-container {
-            display: none;
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .guest-form-container.active {
-            display: block;
-            animation: fadeInUp 0.5s ease;
-        }
-        
-        .guest-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-        
-        .guest-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border-left-color: #667eea;
-        }
-        
-        .guest-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 1rem;
-        }
-        
-        .guest-name {
-            font-size: 1.3rem;
+        .section-title {
+            font-size: 1.8rem;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-        
-        .guest-email {
-            color: #667eea;
-            font-weight: 500;
-        }
-        
-        .guest-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .detail-item {
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #666;
         }
         
-        .detail-item i {
-            color: #667eea;
-            width: 20px;
+        .data-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
         }
         
-        .guest-stats-mini {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
+        .table-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
         }
         
-        .mini-stat {
+        .table-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .table-content {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
             background: #f8f9fa;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
+            font-weight: 600;
+            color: #2c3e50;
             font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            color: #666;
+            vertical-align: middle;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+            transition: background 0.2s ease;
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-checked-in {
+            background: #cce7ff;
+            color: #0066cc;
+        }
+        
+        .status-checked-out {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        .guest-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .guest-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .guest-details h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .guest-details p {
+            margin: 0;
+            font-size: 0.8rem;
             color: #666;
         }
         
-        .mini-stat strong {
+        .reservation-id {
+            font-family: 'Courier New', monospace;
+            background: #f1f3f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-weight: 600;
             color: #2c3e50;
+        }
+        
+        .amount {
+            font-weight: 600;
+            color: #27ae60;
         }
         
         @media (max-width: 768px) {
             .search-form {
                 flex-direction: column;
-            }
-            
-            .guest-actions {
-                flex-direction: column;
                 gap: 1rem;
-                align-items: stretch;
             }
             
-            .guest-header {
-                flex-direction: column;
-            }
-            
-            .guest-details {
+            .stats-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .table-content {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 0.8rem 0.5rem;
+            }
+            
+            .guest-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
             }
         }
     </style>
@@ -324,210 +348,219 @@ $guests = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <i class="fas fa-users"></i> Guest Management System
         </h1>
 
-        <?php if ($message): ?>
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i> <?php echo $message; ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($error): ?>
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Guest Statistics -->
-        <div class="guest-stats">
+        <!-- Statistics -->
+        <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-number"><?php echo count($guests); ?></div>
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number"><?php echo $total_guests; ?></div>
                 <div class="stat-label">Total Guests</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number"><?php echo array_sum(array_column($guests, 'total_reservations')); ?></div>
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-number"><?php echo $total_reservations; ?></div>
                 <div class="stat-label">Total Reservations</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number"><?php echo count(array_filter($guests, function($g) { return $g['total_reservations'] > 0; })); ?></div>
-                <div class="stat-label">Active Guests</div>
             </div>
         </div>
 
-        <!-- Search Section -->
+        <!-- Guest Search Section -->
         <div class="search-section">
-            <h3><i class="fas fa-search"></i> Search Guests</h3>
+            <h3 class="section-title">
+                <i class="fas fa-search"></i> Search Guests
+            </h3>
             <form method="GET" class="search-form">
+                <input type="hidden" name="res_search" value="<?php echo htmlspecialchars($reservations_search); ?>">
                 <div class="form-group search-input">
-                    <input type="text" name="search" placeholder="Search by name, email, or phone..." 
+                    <input type="text" name="search" placeholder="Search guests by name, email, or phone..." 
                            value="<?php echo htmlspecialchars($search); ?>" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Search
                 </button>
                 <?php if ($search): ?>
-                    <a href="guests.php" class="btn btn-secondary">
+                    <a href="guests.php<?php echo $reservations_search ? '?res_search=' . urlencode($reservations_search) : ''; ?>" class="btn btn-secondary">
                         <i class="fas fa-times"></i> Clear
                     </a>
                 <?php endif; ?>
             </form>
         </div>
 
-        <!-- Guest Actions -->
-        <div class="guest-actions">
-            <button class="toggle-form-btn" onclick="toggleGuestForm()">
-                <i class="fas fa-plus"></i> Add New Guest
-            </button>
+        <!-- Guests Table -->
+        <div class="data-table">
+            <div class="table-header">
+                <h3>
+                    <i class="fas fa-users"></i> Guest Directory
+                    <?php if ($search): ?>
+                        <small>(Search results for "<?php echo htmlspecialchars($search); ?>")</small>
+                    <?php endif; ?>
+                </h3>
+            </div>
+            <div class="table-content">
+                <?php if (empty($guests)): ?>
+                    <div class="no-data">
+                        <i class="fas fa-users"></i>
+                        <p>No guests found<?php echo $search ? ' matching your search' : ''; ?>.</p>
+                    </div>
+                <?php else: ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Guest</th>
+                                <th>Contact</th>
+                                <th>ID Number</th>
+                                <th>Date of Birth</th>
+                                <th>Address</th>
+                                <th>Reservations</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($guests as $guest): ?>
+                                <tr>
+                                    <td>
+                                        <div class="guest-info">
+                                            <div class="guest-avatar">
+                                                <?php echo strtoupper(substr($guest['first_name'], 0, 1) . substr($guest['last_name'], 0, 1)); ?>
+                                            </div>
+                                            <div class="guest-details">
+                                                <h4><?php echo htmlspecialchars($guest['first_name'] . ' ' . $guest['last_name']); ?></h4>
+                                                <p><?php echo htmlspecialchars($guest['email']); ?></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($guest['phone']); ?></td>
+                                    <td><?php echo $guest['id_number'] ? htmlspecialchars($guest['id_number']) : '-'; ?></td>
+                                    <td>
+                                        <?php echo $guest['date_of_birth'] ? date('M d, Y', strtotime($guest['date_of_birth'])) : '-'; ?>
+                                    </td>
+                                    <td>
+                                        <?php 
+                                        if ($guest['address']) {
+                                            echo htmlspecialchars(strlen($guest['address']) > 50 ? substr($guest['address'], 0, 50) . '...' : $guest['address']);
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo $guest['total_reservations']; ?></strong>
+                                    </td>
+                                    <td><?php echo date('M d, Y', strtotime($guest['created_at'])); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <!-- Add/Edit Guest Form -->
-        <div class="guest-form-container" id="guestFormContainer">
-            <h3><?php echo $edit_guest ? 'Edit Guest' : 'Add New Guest'; ?></h3>
-            <form method="POST" class="form-grid">
-                <?php if ($edit_guest): ?>
-                    <input type="hidden" name="guest_id" value="<?php echo $edit_guest['guest_id']; ?>">
+        <!-- Reservations Search Section -->
+        <div class="search-section">
+            <h3 class="section-title">
+                <i class="fas fa-search"></i> Search Reservations
+            </h3>
+            <form method="GET" class="search-form">
+                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <div class="form-group search-input">
+                    <input type="text" name="res_search" placeholder="Search reservations by guest name, email, reservation ID, or room number..." 
+                           value="<?php echo htmlspecialchars($reservations_search); ?>" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                <?php if ($reservations_search): ?>
+                    <a href="guests.php<?php echo $search ? '?search=' . urlencode($search) : ''; ?>" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
                 <?php endif; ?>
-                
-                <div class="form-group">
-                    <label>First Name *</label>
-                    <input type="text" name="first_name" required 
-                           value="<?php echo $edit_guest ? htmlspecialchars($edit_guest['first_name']) : ''; ?>">
-                </div>
-                
-                <div class="form-group">
-                    <label>Last Name *</label>
-                    <input type="text" name="last_name" required 
-                           value="<?php echo $edit_guest ? htmlspecialchars($edit_guest['last_name']) : ''; ?>">
-                </div>
-                
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" name="email" required 
-                           value="<?php echo $edit_guest ? htmlspecialchars($edit_guest['email']) : ''; ?>">
-                </div>
-                
-                <div class="form-group">
-                    <label>Phone *</label>
-                    <input type="tel" name="phone" required 
-                           value="<?php echo $edit_guest ? htmlspecialchars($edit_guest['phone']) : ''; ?>">
-                </div>
-                
-                <div class="form-group">
-                    <label>ID Number</label>
-                    <input type="text" name="id_number" 
-                           value="<?php echo $edit_guest ? htmlspecialchars($edit_guest['id_number']) : ''; ?>">
-                </div>
-                
-                <div class="form-group">
-                    <label>Date of Birth</label>
-                    <input type="date" name="date_of_birth" 
-                           value="<?php echo $edit_guest ? $edit_guest['date_of_birth'] : ''; ?>">
-                </div>
-                
-                <div class="form-group form-group-full">
-                    <label>Address</label>
-                    <textarea name="address" rows="3"><?php echo $edit_guest ? htmlspecialchars($edit_guest['address']) : ''; ?></textarea>
-                </div>
-                
-                <div class="form-group form-group-full">
-                    <button type="submit" name="<?php echo $edit_guest ? 'update_guest' : 'add_guest'; ?>" class="btn btn-primary">
-                        <i class="fas fa-<?php echo $edit_guest ? 'edit' : 'plus'; ?>"></i>
-                        <?php echo $edit_guest ? 'Update Guest' : 'Add Guest'; ?>
-                    </button>
-                    <?php if ($edit_guest): ?>
-                        <a href="guests.php" class="btn btn-secondary" style="margin-left: 1rem;">
-                            <i class="fas fa-times"></i> Cancel
-                        </a>
-                    <?php endif; ?>
-                </div>
             </form>
         </div>
 
-        <!-- Guests List -->
-        <div class="form-container">
-            <h3>
-                <i class="fas fa-list"></i> Guest Directory
-                <?php if ($search): ?>
-                    <small>(Search results for "<?php echo htmlspecialchars($search); ?>")</small>
+        <!-- Reservations Table -->
+        <div class="data-table">
+            <div class="table-header">
+                <h3>
+                    <i class="fas fa-calendar-alt"></i> All Reservations
+                    <?php if ($reservations_search): ?>
+                        <small>(Search results for "<?php echo htmlspecialchars($reservations_search); ?>")</small>
+                    <?php endif; ?>
+                </h3>
+            </div>
+            <div class="table-content">
+                <?php if (empty($reservations)): ?>
+                    <div class="no-data">
+                        <i class="fas fa-calendar-alt"></i>
+                        <p>No reservations found<?php echo $reservations_search ? ' matching your search' : ''; ?>.</p>
+                    </div>
+                <?php else: ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reservation ID</th>
+                                <th>Guest</th>
+                                <th>Room</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Guests</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($reservations as $reservation): ?>
+                                <tr>
+                                    <td>
+                                        <span class="reservation-id">#<?php echo str_pad($reservation['reservation_id'], 6, '0', STR_PAD_LEFT); ?></span>
+                                    </td>
+                                    <td>
+                                        <div class="guest-info">
+                                            <div class="guest-avatar">
+                                                <?php 
+                                                $names = explode(' ', $reservation['guest_name']);
+                                                echo strtoupper(substr($names[0], 0, 1) . (isset($names[1]) ? substr($names[1], 0, 1) : ''));
+                                                ?>
+                                            </div>
+                                            <div class="guest-details">
+                                                <h4><?php echo htmlspecialchars($reservation['guest_name']); ?></h4>
+                                                <p><?php echo htmlspecialchars($reservation['guest_email']); ?></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo htmlspecialchars($reservation['room_number']); ?></strong><br>
+                                        <small><?php echo htmlspecialchars($reservation['type_name']); ?></small>
+                                    </td>
+                                    <td><?php echo date('M d, Y', strtotime($reservation['check_in_date'])); ?></td>
+                                    <td><?php echo date('M d, Y', strtotime($reservation['check_out_date'])); ?></td>
+                                    <td>
+                                        <i class="fas fa-users"></i> <?php echo $reservation['adults']; ?>
+                                        <?php if ($reservation['children'] > 0): ?>
+                                            <br><i class="fas fa-child"></i> <?php echo $reservation['children']; ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($reservation['total_amount']): ?>
+                                            <span class="amount">$<?php echo number_format($reservation['total_amount'], 2); ?></span>
+                                        <?php else: ?>
+                                            <span class="amount">$<?php echo number_format($reservation['base_price'], 2); ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-<?php echo $reservation['status']; ?>">
+                                            <?php echo ucfirst(str_replace('_', ' ', $reservation['status'])); ?>
+                                        </span>
+                                    </td>
+                                    <td><?php echo date('M d, Y', strtotime($reservation['created_at'])); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 <?php endif; ?>
-            </h3>
-            
-            <?php if (empty($guests)): ?>
-                <div style="text-align: center; padding: 3rem; color: #666;">
-                    <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                    <p>No guests found<?php echo $search ? ' matching your search' : ''; ?>.</p>
-                </div>
-            <?php else: ?>
-                <div style="display: grid; gap: 1.5rem;">
-                    <?php foreach ($guests as $guest): ?>
-                        <div class="guest-card">
-                            <div class="guest-header">
-                                <div>
-                                    <div class="guest-name">
-                                        <?php echo htmlspecialchars($guest['first_name'] . ' ' . $guest['last_name']); ?>
-                                    </div>
-                                    <div class="guest-email">
-                                        <i class="fas fa-envelope"></i>
-                                        <?php echo htmlspecialchars($guest['email']); ?>
-                                    </div>
-                                </div>
-                                <div class="action-buttons">
-                                    <a href="guests.php?edit=<?php echo $guest['guest_id']; ?>" 
-                                       class="btn-small btn-edit" title="Edit Guest">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="guest_profile.php?id=<?php echo $guest['guest_id']; ?>" 
-                                       class="btn-small btn-view" title="View Profile">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="guests.php?delete=<?php echo $guest['guest_id']; ?>" 
-                                       class="btn-small btn-delete" title="Delete Guest"
-                                       onclick="return confirm('Are you sure you want to delete this guest?')">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            
-                            <div class="guest-details">
-                                <div class="detail-item">
-                                    <i class="fas fa-phone"></i>
-                                    <span><?php echo htmlspecialchars($guest['phone']); ?></span>
-                                </div>
-                                <?php if ($guest['date_of_birth']): ?>
-                                    <div class="detail-item">
-                                        <i class="fas fa-birthday-cake"></i>
-                                        <span><?php echo date('M d, Y', strtotime($guest['date_of_birth'])); ?></span>
-                                    </div>
-                                <?php endif; ?>
-                                <?php if ($guest['id_number']): ?>
-                                    <div class="detail-item">
-                                        <i class="fas fa-id-card"></i>
-                                        <span><?php echo htmlspecialchars($guest['id_number']); ?></span>
-                                    </div>
-                                <?php endif; ?>
-                                <div class="detail-item">
-                                    <i class="fas fa-calendar-plus"></i>
-                                    <span>Joined <?php echo date('M d, Y', strtotime($guest['created_at'])); ?></span>
-                                </div>
-                            </div>
-                            
-                            <?php if ($guest['address']): ?>
-                                <div class="detail-item" style="margin-top: 1rem;">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span><?php echo htmlspecialchars($guest['address']); ?></span>
-                                </div>
-                            <?php endif; ?>
-                            
-                            <div class="guest-stats-mini">
-                                <div class="mini-stat">
-                                    <strong><?php echo $guest['total_reservations']; ?></strong> Total Reservations
-                                </div>
-                                <div class="mini-stat">
-                                    <strong><?php echo $guest['confirmed_reservations']; ?></strong> Confirmed
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+            </div>
         </div>
     </div>
 
@@ -540,34 +573,6 @@ $guests = $stmt->fetchAll(PDO::FETCH_ASSOC);
             navMenu.classList.toggle('active');
             navToggle.classList.toggle('active');
         });
-
-        // Toggle guest form
-        function toggleGuestForm() {
-            const formContainer = document.getElementById('guestFormContainer');
-            const isVisible = formContainer.classList.contains('active');
-            
-            if (isVisible) {
-                formContainer.classList.remove('active');
-            } else {
-                formContainer.classList.add('active');
-                formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        // Show form if editing
-        <?php if ($edit_guest): ?>
-            document.getElementById('guestFormContainer').classList.add('active');
-        <?php endif; ?>
-
-        // Auto-hide messages after 5 seconds
-        setTimeout(() => {
-            const messages = document.querySelectorAll('.success-message, .error-message');
-            messages.forEach(msg => {
-                msg.style.transition = 'opacity 0.5s ease';
-                msg.style.opacity = '0';
-                setTimeout(() => msg.remove(), 500);
-            });
-        }, 5000);
     </script>
 </body>
 </html>
