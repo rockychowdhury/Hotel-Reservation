@@ -69,528 +69,280 @@ $stats = mysqli_fetch_assoc($stats_result);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billing & Payment Management - Luxury Haven Hotel</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#667eea',
+                        'secondary': '#764ba2',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .billing-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .billing-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            color: white;
-        }
-
-        .billing-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .billing-header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .stat-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #667eea;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #666;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-        }
-
-        .billing-table-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            overflow-x: auto;
-        }
-
-        .section-tabs {
-            display: flex;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .tab-button {
-            padding: 1rem 2rem;
-            background: none;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #666;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .tab-button.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
-        }
-
-        .tab-button:hover {
-            color: #667eea;
-        }
-
-        .billing-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .billing-table th,
-        .billing-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .billing-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
-        }
-
-        .billing-table tr:hover {
-            background: #f8f9fa;
-        }
-
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-paid {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .status-partial {
-            background: #ffeaa7;
-            color: #6c5ce7;
-        }
-
-        .status-refunded {
-            background: #fab1a0;
-            color: #e17055;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .btn-primary {
+        .gradient-btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-back {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            margin-bottom: 2rem;
+        .glass-effect {
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .btn-back:hover {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-        }
-
-        .alert {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 2rem;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .close {
-            color: #aaa;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: #667eea;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: #ddd;
-            margin-bottom: 1rem;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @media (max-width: 768px) {
-            .billing-table {
-                font-size: 0.85rem;
-            }
-            
-            .billing-table th,
-            .billing-table td {
-                padding: 0.5rem;
-            }
         }
     </style>
 </head>
-<body>
-    <div class="billing-container">
-        <a href="index.php" class="btn btn-back">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </a>
+<body class="font-poppins">
+    <div class="gradient-bg min-h-screen">
+        <div class="max-w-7xl mx-auto p-8">
+            <!-- Back Button -->
+            <a href="index.php" class="inline-flex items-center gap-2 px-4 py-2 bg-primary bg-opacity-20 text-dark rounded-lg hover:bg-opacity-30 transition-all duration-300 glass-effect border border-white border-opacity-30 mb-8">
+                <i class="fas fa-arrow-left"></i> 
+                <span>Back to Dashboard</span>
+            </a>
 
-        <div class="billing-header">
-            <h1><i class="fas fa-receipt"></i> Billing & Payment Management</h1>
-            <p>Manage hotel billing records and payment status</p>
-        </div>
-
-        <?php if($message): ?>
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i> <?php echo $message; ?>
+            <!-- Header -->
+            <div class="text-center mb-12 text-primary">
+                <h1 class="text-4xl font-bold mb-2 drop-shadow-lg">
+                    <i class="fas fa-receipt text-primary mr-3"></i>Billing & Payment Management
+                </h1>
+                <p class="text-lg opacity-90">Manage hotel billing records and payment status</p>
             </div>
-        <?php endif; ?>
 
-        <?php if($error): ?>
-            <div class="alert alert-error">
-                <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Financial Statistics -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-clock"></i>
+            <!-- Alerts -->
+            <?php if($message): ?>
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span><?php echo $message; ?></span>
                 </div>
-                <div class="stat-number"><?php echo $stats['pending_payments']; ?></div>
-                <div class="stat-label">Pending Payments</div>
-            </div>
+            <?php endif; ?>
 
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-check-circle"></i>
+            <?php if($error): ?>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span><?php echo $error; ?></span>
                 </div>
-                <div class="stat-number"><?php echo $stats['completed_payments']; ?></div>
-                <div class="stat-label">Completed Payments</div>
-            </div>
+            <?php endif; ?>
 
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="stat-number">$<?php echo number_format($stats['pending_amount'], 0); ?></div>
-                <div class="stat-label">Pending Amount</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-number">$<?php echo number_format($stats['total_revenue'], 0); ?></div>
-                <div class="stat-label">Total Revenue</div>
-            </div>
-        </div>
-
-        <!-- Billing Table -->
-        <div class="billing-table-container">
-            <div class="section-tabs">
-                <button class="tab-button active" onclick="showTab('all')">All Bills</button>
-                <button class="tab-button" onclick="showTab('pending')">Pending Payments</button>
-                <button class="tab-button" onclick="showTab('paid')">Paid Bills</button>
-            </div>
-
-            <!-- All Bills Tab -->
-            <div id="all-tab" class="tab-content active">
-                <?php if(mysqli_num_rows($billing_result) > 0): ?>
-                    <table class="billing-table">
-                        <thead>
-                            <tr>
-                                <th>Bill ID</th>
-                                <th>Guest Name</th>
-                                <th>Room</th>
-                                <th>Check-in</th>
-                                <th>Nights</th>
-                                <th>Room Charges</th>
-                                <th>Tax</th>
-                                <th>Service</th>
-                                <th>Total Amount</th>
-                                <th>Status</th>
-                                <th>Payment Method</th>
-                                <th>Payment Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            // Reset the result pointer
-                            mysqli_data_seek($billing_result, 0);
-                            while($bill = mysqli_fetch_assoc($billing_result)): 
-                            ?>
-                            <tr>
-                                <td>#<?php echo $bill['bill_id']; ?></td>
-                                <td><?php echo htmlspecialchars($bill['first_name'] . ' ' . $bill['last_name']); ?></td>
-                                <td><?php echo $bill['room_number']; ?><br><small><?php echo $bill['type_name']; ?></small></td>
-                                <td><?php echo date('M j, Y', strtotime($bill['check_in_date'])); ?></td>
-                                <td><?php echo $bill['nights']; ?></td>
-                                <td>$<?php echo number_format($bill['room_charges'], 2); ?></td>
-                                <td>$<?php echo number_format($bill['tax_amount'], 2); ?></td>
-                                <td>$<?php echo number_format($bill['service_charges'], 2); ?></td>
-                                <td><strong>$<?php echo number_format($bill['total_amount'], 2); ?></strong></td>
-                                <td>
-                                    <span class="status-badge status-<?php echo $bill['payment_status']; ?>">
-                                        <?php echo ucfirst($bill['payment_status']); ?>
-                                    </span>
-                                </td>
-                                <td><?php echo $bill['payment_method'] ? ucfirst(str_replace('_', ' ', $bill['payment_method'])) : '-'; ?></td>
-                                <td><?php echo $bill['payment_date'] ? date('M j, Y', strtotime($bill['payment_date'])) : '-'; ?></td>
-                                <td>
-                                    <?php if($bill['payment_status'] == 'pending'): ?>
-                                        <button class="btn btn-primary" onclick="openPaymentModal(<?php echo $bill['bill_id']; ?>, '<?php echo htmlspecialchars($bill['first_name'] . ' ' . $bill['last_name']); ?>', <?php echo $bill['total_amount']; ?>)">
-                                            <i class="fas fa-credit-card"></i> Mark Paid
-                                        </button>
-                                    <?php else: ?>
-                                        <span style="color: #28a745;"><i class="fas fa-check"></i> Paid</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <div class="empty-state">
-                        <i class="fas fa-receipt"></i>
-                        <h3>No Billing Records</h3>
-                        <p>Billing records will appear here once created</p>
+            <!-- Financial Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white bg-opacity-95 rounded-xl p-6 text-center shadow-xl glass-effect border border-white border-opacity-30">
+                    <div class="text-5xl text-primary mb-4">
+                        <i class="fas fa-clock"></i>
                     </div>
-                <?php endif; ?>
+                    <div class="text-3xl font-bold text-gray-800 mb-2"><?php echo $stats['pending_payments']; ?></div>
+                    <div class="text-gray-600 font-medium uppercase tracking-wide text-sm">Pending Payments</div>
+                </div>
+
+                <div class="bg-white bg-opacity-95 rounded-xl p-6 text-center shadow-xl glass-effect border border-white border-opacity-30">
+                    <div class="text-5xl text-primary mb-4">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800 mb-2"><?php echo $stats['completed_payments']; ?></div>
+                    <div class="text-gray-600 font-medium uppercase tracking-wide text-sm">Completed Payments</div>
+                </div>
+
+                <div class="bg-white bg-opacity-95 rounded-xl p-6 text-center shadow-xl glass-effect border border-white border-opacity-30">
+                    <div class="text-5xl text-primary mb-4">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800 mb-2">$<?php echo number_format($stats['pending_amount'], 0); ?></div>
+                    <div class="text-gray-600 font-medium uppercase tracking-wide text-sm">Pending Amount</div>
+                </div>
+
+                <div class="bg-white bg-opacity-95 rounded-xl p-6 text-center shadow-xl glass-effect border border-white border-opacity-30">
+                    <div class="text-5xl text-primary mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-800 mb-2">$<?php echo number_format($stats['total_revenue'], 0); ?></div>
+                    <div class="text-gray-600 font-medium uppercase tracking-wide text-sm">Total Revenue</div>
+                </div>
             </div>
 
-            <!-- Pending Payments Tab -->
-            <div id="pending-tab" class="tab-content">
-                <table class="billing-table">
-                    <thead>
-                        <tr>
-                            <th>Bill ID</th>
-                            <th>Guest Name</th>
-                            <th>Room</th>
-                            <th>Total Amount</th>
-                            <th>Created Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pending-bills">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+            <!-- Billing Table Container -->
+            <div class="bg-white bg-opacity-95 rounded-2xl p-8 shadow-2xl glass-effect border border-white border-opacity-30 overflow-x-auto">
+                <!-- Section Tabs -->
+                <div class="flex border-b-2 border-gray-200 mb-8">
+                    <button class="tab-button px-8 py-4 font-semibold text-gray-600 border-b-3 border-transparent hover:text-primary transition-colors duration-300 active" onclick="showTab('all')">
+                        All Bills
+                    </button>
+                    <button class="tab-button px-8 py-4 font-semibold text-gray-600 border-b-3 border-transparent hover:text-primary transition-colors duration-300" onclick="showTab('pending')">
+                        Pending Payments
+                    </button>
+                    <button class="tab-button px-8 py-4 font-semibold text-gray-600 border-b-3 border-transparent hover:text-primary transition-colors duration-300" onclick="showTab('paid')">
+                        Paid Bills
+                    </button>
+                </div>
 
-            <!-- Paid Bills Tab -->
-            <div id="paid-tab" class="tab-content">
-                <table class="billing-table">
-                    <thead>
-                        <tr>
-                            <th>Bill ID</th>
-                            <th>Guest Name</th>
-                            <th>Room</th>
-                            <th>Total Amount</th>
-                            <th>Payment Method</th>
-                            <th>Payment Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="paid-bills">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
+                <!-- All Bills Tab -->
+                <div id="all-tab" class="tab-content">
+                    <?php if(mysqli_num_rows($billing_result) > 0): ?>
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-50">
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Bill ID</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Guest Name</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Room</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Check-in</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Nights</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Total Amount</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Status</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Payment Method</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Payment Date</th>
+                                        <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                    // Reset the result pointer
+                                    mysqli_data_seek($billing_result, 0);
+                                    while($bill = mysqli_fetch_assoc($billing_result)): 
+                                    ?>
+                                    <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                        <td class="p-4 border-b border-gray-200">#<?php echo $bill['bill_id']; ?></td>
+                                        <td class="p-4 border-b border-gray-200"><?php echo htmlspecialchars($bill['first_name'] . ' ' . $bill['last_name']); ?></td>
+                                        <td class="p-4 border-b border-gray-200">
+                                            <div><?php echo $bill['room_number']; ?></div>
+                                            <div class="text-sm text-gray-500"><?php echo $bill['type_name']; ?></div>
+                                        </td>
+                                        <td class="p-4 border-b border-gray-200"><?php echo date('M j, Y', strtotime($bill['check_in_date'])); ?></td>
+                                        <td class="p-4 border-b border-gray-200"><?php echo $bill['nights']; ?></td>
+                                        <td class="p-4 border-b border-gray-200 font-bold">$<?php echo number_format($bill['total_amount'], 2); ?></td>
+                                        <td class="p-4 border-b border-gray-200">
+                                            <?php
+                                            $statusClasses = [
+                                                'pending' => 'bg-yellow-100 text-yellow-800',
+                                                'paid' => 'bg-blue-100 text-blue-800',
+                                                'partial' => 'bg-purple-100 text-purple-800',
+                                                'refunded' => 'bg-red-100 text-red-800'
+                                            ];
+                                            $statusClass = $statusClasses[$bill['payment_status']] ?? 'bg-gray-100 text-gray-800';
+                                            ?>
+                                            <span class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide <?php echo $statusClass; ?>">
+                                                <?php echo ucfirst($bill['payment_status']); ?>
+                                            </span>
+                                        </td>
+                                        <td class="p-4 border-b border-gray-200"><?php echo $bill['payment_method'] ? ucfirst(str_replace('_', ' ', $bill['payment_method'])) : '-'; ?></td>
+                                        <td class="p-4 border-b border-gray-200"><?php echo $bill['payment_date'] ? date('M j, Y', strtotime($bill['payment_date'])) : '-'; ?></td>
+                                        <td class="p-4 border-b border-gray-200">
+                                            <?php if($bill['payment_status'] == 'pending'): ?>
+                                                <button class="gradient-btn text-white px-4 py-2 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 text-sm font-semibold" onclick="openPaymentModal(<?php echo $bill['bill_id']; ?>, '<?php echo htmlspecialchars($bill['first_name'] . ' ' . $bill['last_name']); ?>', <?php echo $bill['total_amount']; ?>)">
+                                                    <i class="fas fa-credit-card"></i> Mark Paid
+                                                </button>
+                                            <?php else: ?>
+                                                <span class="text-green-600 flex items-center gap-2">
+                                                    <i class="fas fa-check"></i> Paid
+                                                </span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <div class="text-center py-12 text-gray-500">
+                            <i class="fas fa-receipt text-6xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">No Billing Records</h3>
+                            <p>Billing records will appear here once created</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Pending Payments Tab -->
+                <div id="pending-tab" class="tab-content hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Bill ID</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Guest Name</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Room</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Total Amount</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Created Date</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pending-bills">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Paid Bills Tab -->
+                <div id="paid-tab" class="tab-content hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Bill ID</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Guest Name</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Room</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Total Amount</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Payment Method</th>
+                                    <th class="text-left p-4 font-semibold text-gray-700 uppercase tracking-wide text-sm border-b border-gray-200">Payment Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paid-bills">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Payment Modal -->
-    <div id="paymentModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Mark Payment as Paid</h3>
-                <span class="close" onclick="closePaymentModal()">&times;</span>
+    <div id="paymentModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 glass-effect">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+                <div class="flex items-center justify-between p-6 border-b-2 border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-800">Mark Payment as Paid</h3>
+                    <button class="text-gray-400 hover:text-primary text-2xl font-bold transition-colors duration-200" onclick="closePaymentModal()">&times;</button>
+                </div>
+                
+                <form method="POST" action="" class="p-6">
+                    <input type="hidden" name="bill_id" id="modal_bill_id">
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Guest Name</label>
+                        <input type="text" id="modal_guest_name" readonly class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-lg">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Amount</label>
+                        <input type="text" id="modal_amount" readonly class="w-full p-3 bg-gray-50 border-2 border-gray-200 rounded-lg">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Payment Method</label>
+                        <select name="payment_method" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
+                            <option value="">Select Payment Method</option>
+                            <option value="cash">Cash</option>
+                            <option value="credit_card">Credit Card</option>
+                            <option value="debit_card">Debit Card</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="digital_wallet">Digital Wallet</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button type="button" class="flex-1 px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200 font-semibold" onclick="closePaymentModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" name="mark_paid" class="flex-1 gradient-btn text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all duration-300 font-semibold flex items-center justify-center gap-2">
+                            <i class="fas fa-check"></i> Mark as Paid
+                        </button>
+                    </div>
+                </form>
             </div>
-            
-            <form method="POST" action="">
-                <input type="hidden" name="bill_id" id="modal_bill_id">
-                
-                <div class="form-group">
-                    <label>Guest Name</label>
-                    <input type="text" id="modal_guest_name" readonly style="background: #f8f9fa;">
-                </div>
-                
-                <div class="form-group">
-                    <label>Amount</label>
-                    <input type="text" id="modal_amount" readonly style="background: #f8f9fa;">
-                </div>
-                
-                <div class="form-group">
-                    <label>Payment Method</label>
-                    <select name="payment_method" required>
-                        <option value="">Select Payment Method</option>
-                        <option value="cash">Cash</option>
-                        <option value="credit_card">Credit Card</option>
-                        <option value="debit_card">Debit Card</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="digital_wallet">Digital Wallet</option>
-                    </select>
-                </div>
-                
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button type="button" class="btn" onclick="closePaymentModal()" style="background: #6c757d; color: white; flex: 1;">
-                        Cancel
-                    </button>
-                    <button type="submit" name="mark_paid" class="btn btn-primary" style="flex: 1;">
-                        <i class="fas fa-check"></i> Mark as Paid
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -608,17 +360,19 @@ $stats = mysqli_fetch_assoc($stats_result);
         function showTab(tabName) {
             // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
+                tab.classList.add('hidden');
             });
             
             // Remove active class from all buttons
             document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
+                btn.classList.remove('active', 'text-primary', 'border-primary');
+                btn.classList.add('text-gray-600', 'border-transparent');
             });
             
             // Show selected tab and activate button
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            event.target.classList.remove('text-gray-600', 'border-transparent');
+            event.target.classList.add('active', 'text-primary', 'border-primary');
             
             // Populate filtered data
             if (tabName === 'pending') {
@@ -633,19 +387,22 @@ $stats = mysqli_fetch_assoc($stats_result);
             const tbody = document.getElementById('pending-bills');
             
             if (pendingBills.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #666;">No pending payments</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No pending payments</td></tr>';
                 return;
             }
             
             tbody.innerHTML = pendingBills.map(bill => `
-                <tr>
-                    <td>#${bill.bill_id}</td>
-                    <td>${bill.first_name} ${bill.last_name}</td>
-                    <td>${bill.room_number}<br><small>${bill.type_name}</small></td>
-                    <td><strong>$${parseFloat(bill.total_amount).toFixed(2)}</strong></td>
-                    <td>${new Date(bill.created_at).toLocaleDateString()}</td>
-                    <td>
-                        <button class="btn btn-primary" onclick="openPaymentModal(${bill.bill_id}, '${bill.first_name} ${bill.last_name}', ${bill.total_amount})">
+                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                    <td class="p-4 border-b border-gray-200">#${bill.bill_id}</td>
+                    <td class="p-4 border-b border-gray-200">${bill.first_name} ${bill.last_name}</td>
+                    <td class="p-4 border-b border-gray-200">
+                        <div>${bill.room_number}</div>
+                        <div class="text-sm text-gray-500">${bill.type_name}</div>
+                    </td>
+                    <td class="p-4 border-b border-gray-200 font-bold">$${parseFloat(bill.total_amount).toFixed(2)}</td>
+                    <td class="p-4 border-b border-gray-200">${new Date(bill.created_at).toLocaleDateString()}</td>
+                    <td class="p-4 border-b border-gray-200">
+                        <button class="gradient-btn text-white px-4 py-2 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 text-sm font-semibold" onclick="openPaymentModal(${bill.bill_id}, '${bill.first_name} ${bill.last_name}', ${bill.total_amount})">
                             <i class="fas fa-credit-card"></i> Mark Paid
                         </button>
                     </td>
@@ -658,18 +415,21 @@ $stats = mysqli_fetch_assoc($stats_result);
             const tbody = document.getElementById('paid-bills');
             
             if (paidBills.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #666;">No paid bills</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No paid bills</td></tr>';
                 return;
             }
             
             tbody.innerHTML = paidBills.map(bill => `
-                <tr>
-                    <td>#${bill.bill_id}</td>
-                    <td>${bill.first_name} ${bill.last_name}</td>
-                    <td>${bill.room_number}<br><small>${bill.type_name}</small></td>
-                    <td><strong>$${parseFloat(bill.total_amount).toFixed(2)}</strong></td>
-                    <td>${bill.payment_method ? bill.payment_method.replace('_', ' ') : '-'}</td>
-                    <td>${bill.payment_date ? new Date(bill.payment_date).toLocaleDateString() : '-'}</td>
+                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                    <td class="p-4 border-b border-gray-200">#${bill.bill_id}</td>
+                    <td class="p-4 border-b border-gray-200">${bill.first_name} ${bill.last_name}</td>
+                    <td class="p-4 border-b border-gray-200">
+                        <div>${bill.room_number}</div>
+                        <div class="text-sm text-gray-500">${bill.type_name}</div>
+                    </td>
+                    <td class="p-4 border-b border-gray-200 font-bold">$${parseFloat(bill.total_amount).toFixed(2)}</td>
+                    <td class="p-4 border-b border-gray-200">${bill.payment_method ? bill.payment_method.replace('_', ' ') : '-'}</td>
+                    <td class="p-4 border-b border-gray-200">${bill.payment_date ? new Date(bill.payment_date).toLocaleDateString() : '-'}</td>
                 </tr>
             `).join('');
         }
@@ -678,11 +438,11 @@ $stats = mysqli_fetch_assoc($stats_result);
             document.getElementById('modal_bill_id').value = billId;
             document.getElementById('modal_guest_name').value = guestName;
             document.getElementById('modal_amount').value = '$' + parseFloat(amount).toFixed(2);
-            document.getElementById('paymentModal').style.display = 'block';
+            document.getElementById('paymentModal').classList.remove('hidden');
         }
 
         function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
+            document.getElementById('paymentModal').classList.add('hidden');
         }
 
         // Close modal when clicking outside
@@ -695,13 +455,20 @@ $stats = mysqli_fetch_assoc($stats_result);
 
         // Auto-hide alerts
         setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert');
+            const alerts = document.querySelectorAll('.bg-green-100, .bg-red-100');
             alerts.forEach(function(alert) {
                 alert.style.opacity = '0';
                 alert.style.transition = 'opacity 0.5s ease';
                 setTimeout(() => alert.style.display = 'none', 500);
             });
         }, 5000);
+
+        // Initialize first tab as active
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstTab = document.querySelector('.tab-button');
+            firstTab.classList.add('text-primary', 'border-primary');
+            firstTab.classList.remove('text-gray-600', 'border-transparent');
+        });
     </script>
 </body>
 </html>

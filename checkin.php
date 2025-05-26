@@ -168,275 +168,288 @@ $checkout_result = mysqli_query($conn, $checkout_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check-in/Check-out - Luxury Haven</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="bg-gray-50 font-poppins min-h-screen">
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-hotel"></i>
-                <span>Luxury Haven</span>
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-hotel text-2xl text-blue-600"></i>
+                    <span class="text-xl font-bold text-gray-800">Luxury Haven</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
+                    <a href="reservation.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Reservations</a>
+                    <a href="checkin.php" class="text-blue-600 border-b-2 border-blue-600 px-3 py-2 text-sm font-medium">Check-in/Out</a>
+                    <a href="rooms.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Rooms</a>
+                    <a href="guests.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Guests</a>
+                    <a href="billing.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Billing</a>
+                </div>
             </div>
-            <ul class="nav-menu">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="reservation.php">Reservations</a></li>
-                <li><a href="checkin.php">Check-in/Out</a></li>
-                <li><a href="rooms.php">Rooms</a></li>
-                <li><a href="guests.php">Guests</a></li>
-                <li><a href="billing.php">Billing</a></li>
-            </ul>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Success/Error Messages -->
         <?php if (!empty($message)): ?>
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i> <?php echo $message; ?>
+            <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center">
+                <i class="fas fa-check-circle text-green-600 mr-3"></i>
+                <span class="text-green-800"><?php echo $message; ?></span>
             </div>
         <?php endif; ?>
 
         <?php if (!empty($error)): ?>
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+                <i class="fas fa-exclamation-triangle text-red-600 mr-3"></i>
+                <span class="text-red-800"><?php echo $error; ?></span>
             </div>
         <?php endif; ?>
 
         <!-- Check-in Section -->
-        <div class="form-container">
-            <h1 class="form-title">
-                <i class="fas fa-door-open"></i>
-                Guest Check-in
-            </h1>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 overflow-hidden">
+            <div class="px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-gray-200">
+                <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-door-open text-green-600 mr-3"></i>
+                    Guest Check-in
+                </h1>
+            </div>
 
-            <?php if (mysqli_num_rows($checkin_result) > 0): ?>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Reservation ID</th>
-                            <th>Guest</th>
-                            <th>Contact</th>
-                            <th>Room</th>
-                            <th>Check-in Date</th>
-                            <th>Guests</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($checkin = mysqli_fetch_assoc($checkin_result)): ?>
-                            <tr>
-                                <td><?php echo $checkin['reservation_id']; ?></td>
-                                <td><?php echo $checkin['first_name'] . ' ' . $checkin['last_name']; ?></td>
-                                <td>
-                                    <?php echo $checkin['phone']; ?><br>
-                                    <small><?php echo $checkin['email']; ?></small>
-                                </td>
-                                <td><?php echo $checkin['type_name'] . ' (' . $checkin['room_number'] . ')'; ?></td>
-                                <td><?php echo date('M d, Y', strtotime($checkin['check_in_date'])); ?></td>
-                                <td><?php echo $checkin['adults'] . ' Adults, ' . $checkin['children'] . ' Children'; ?></td>
-                                <td>
-                                    <button class="btn-small btn-view" onclick="showCheckinModal(<?php echo $checkin['reservation_id']; ?>, '<?php echo $checkin['first_name'] . ' ' . $checkin['last_name']; ?>', '<?php echo $checkin['room_number']; ?>')">
-                                        Check-in
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p style="text-align: center; color: #666; margin: 2rem 0;">No reservations ready for check-in.</p>
-            <?php endif; ?>
+            <div class="p-6">
+                <?php if (mysqli_num_rows($checkin_result) > 0): ?>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full table-auto">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reservation ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check-in Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guests</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <?php while($checkin = mysqli_fetch_assoc($checkin_result)): ?>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#<?php echo $checkin['reservation_id']; ?></td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900"><?php echo $checkin['first_name'] . ' ' . $checkin['last_name']; ?></div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900"><?php echo $checkin['phone']; ?></div>
+                                            <div class="text-sm text-gray-500"><?php echo $checkin['email']; ?></div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900"><?php echo $checkin['type_name']; ?></div>
+                                            <div class="text-sm text-gray-500">Room <?php echo $checkin['room_number']; ?></div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo date('M d, Y', strtotime($checkin['check_in_date'])); ?></td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $checkin['adults'] . ' Adults, ' . $checkin['children'] . ' Children'; ?></td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <button onclick="showCheckinModal(<?php echo $checkin['reservation_id']; ?>, '<?php echo $checkin['first_name'] . ' ' . $checkin['last_name']; ?>', '<?php echo $checkin['room_number']; ?>')" 
+                                                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
+                                                <i class="fas fa-door-open"></i>
+                                                <span>Check-in</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-12">
+                        <i class="fas fa-calendar-check text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">No reservations ready for check-in.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
 
         <!-- Check-out Section -->
-        <div class="form-container">
-            <h1 class="form-title">
-                <i class="fas fa-door-closed"></i>
-                Guest Check-out
-            </h1>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+                <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-door-closed text-blue-600 mr-3"></i>
+                    Guest Check-out
+                </h1>
+            </div>
 
-            <?php 
-            // Reset result pointer for checkout
-            $checkout_result = mysqli_query($conn, $checkout_query);
-            if (mysqli_num_rows($checkout_result) > 0): ?>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Reservation ID</th>
-                            <th>Guest</th>
-                            <th>Room</th>
-                            <th>Checked-in</th>
-                            <th>Check-out Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($checkout = mysqli_fetch_assoc($checkout_result)): ?>
-                            <tr>
-                                <td><?php echo $checkout['reservation_id']; ?></td>
-                                <td><?php echo $checkout['first_name'] . ' ' . $checkout['last_name']; ?></td>
-                                <td><?php echo $checkout['type_name'] . ' (' . $checkout['room_number'] . ')'; ?></td>
-                                <td><?php echo date('M d, Y H:i', strtotime($checkout['actual_checkin'])); ?></td>
-                                <td><?php echo date('M d, Y', strtotime($checkout['check_out_date'])); ?></td>
-                                <td>
-                                    <button class="btn-small btn-edit" onclick="showCheckoutModal(<?php echo $checkout['reservation_id']; ?>, '<?php echo $checkout['first_name'] . ' ' . $checkout['last_name']; ?>', '<?php echo $checkout['room_number']; ?>')">
-                                        Check-out
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p style="text-align: center; color: #666; margin: 2rem 0;">No guests currently checked in.</p>
-            <?php endif; ?>
+            <div class="p-6">
+                <?php 
+                // Reset result pointer for checkout
+                $checkout_result = mysqli_query($conn, $checkout_query);
+                if (mysqli_num_rows($checkout_result) > 0): ?>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full table-auto">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reservation ID</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Checked-in</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check-out Date</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <?php while($checkout = mysqli_fetch_assoc($checkout_result)): ?>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#<?php echo $checkout['reservation_id']; ?></td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900"><?php echo $checkout['first_name'] . ' ' . $checkout['last_name']; ?></div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900"><?php echo $checkout['type_name']; ?></div>
+                                            <div class="text-sm text-gray-500">Room <?php echo $checkout['room_number']; ?></div>
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo date('M d, Y H:i', strtotime($checkout['actual_checkin'])); ?></td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo date('M d, Y', strtotime($checkout['check_out_date'])); ?></td>
+                                        <td class="px-4 py-4 whitespace-nowrap">
+                                            <button onclick="showCheckoutModal(<?php echo $checkout['reservation_id']; ?>, '<?php echo $checkout['first_name'] . ' ' . $checkout['last_name']; ?>', '<?php echo $checkout['room_number']; ?>')" 
+                                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
+                                                <i class="fas fa-door-closed"></i>
+                                                <span>Check-out</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-12">
+                        <i class="fas fa-bed text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">No guests currently checked in.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
-
-        
     </div>
 
     <!-- Check-in Modal -->
-    <div id="checkinModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('checkinModal')">&times;</span>
-            <h3>Guest Check-in</h3>
-            <form method="POST" action="">
+    <div id="checkinModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-screen overflow-y-auto">
+            <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Guest Check-in</h3>
+                <button onclick="closeModal('checkinModal')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form method="POST" action="" class="p-6">
                 <input type="hidden" id="checkin_reservation_id" name="reservation_id" value="">
-                <div id="checkin_guest_info"></div>
+                <div id="checkin_guest_info" class="mb-6"></div>
                 
-                <div class="form-group">
-                    <label for="early_checkin_fee">Early Check-in Fee ($)</label>
-                    <input type="number" id="early_checkin_fee" name="early_checkin_fee" step="0.01" min="0" value="0">
+                <div class="mb-4">
+                    <label for="early_checkin_fee" class="block text-sm font-medium text-gray-700 mb-2">Early Check-in Fee ($)</label>
+                    <input type="number" id="early_checkin_fee" name="early_checkin_fee" step="0.01" min="0" value="0" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
                 </div>
                 
-                <div class="form-group">
-                    <label for="checkin_notes">Notes</label>
-                    <textarea id="checkin_notes" name="checkin_notes" placeholder="Any special notes for check-in..."></textarea>
+                <div class="mb-6">
+                    <label for="checkin_notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                    <textarea id="checkin_notes" name="checkin_notes" rows="3" placeholder="Any special notes for check-in..."
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"></textarea>
                 </div>
                 
-                <button type="submit" name="checkin" class="btn btn-primary">
-                    <i class="fas fa-door-open"></i> Complete Check-in
+                <button type="submit" name="checkin" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                    <i class="fas fa-door-open"></i>
+                    <span>Complete Check-in</span>
                 </button>
             </form>
         </div>
     </div>
 
     <!-- Check-out Modal -->
-    <div id="checkoutModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('checkoutModal')">&times;</span>
-            <h3>Guest Check-out</h3>
-            <form method="POST" action="">
+    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-screen overflow-y-auto">
+            <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Guest Check-out</h3>
+                <button onclick="closeModal('checkoutModal')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form method="POST" action="" class="p-6">
                 <input type="hidden" id="checkout_reservation_id" name="checkout_reservation_id" value="">
-                <div id="checkout_guest_info"></div>
+                <div id="checkout_guest_info" class="mb-6"></div>
                 
-                <div class="form-group">
-                    <label for="late_checkout_fee">Late Check-out Fee ($)</label>
-                    <input type="number" id="late_checkout_fee" name="late_checkout_fee" step="0.01" min="0" value="0">
+                <div class="mb-4">
+                    <label for="late_checkout_fee" class="block text-sm font-medium text-gray-700 mb-2">Late Check-out Fee ($)</label>
+                    <input type="number" id="late_checkout_fee" name="late_checkout_fee" step="0.01" min="0" value="0" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 </div>
                 
-                <div class="form-group">
-                    <label for="damage_charges">Damage Charges ($)</label>
-                    <input type="number" id="damage_charges" name="damage_charges" step="0.01" min="0" value="0">
+                <div class="mb-4">
+                    <label for="damage_charges" class="block text-sm font-medium text-gray-700 mb-2">Damage Charges ($)</label>
+                    <input type="number" id="damage_charges" name="damage_charges" step="0.01" min="0" value="0" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 </div>
                 
-                <div class="form-group">
-                    <label for="checkout_notes">Notes</label>
-                    <textarea id="checkout_notes" name="checkout_notes" placeholder="Any special notes for check-out..."></textarea>
+                <div class="mb-6">
+                    <label for="checkout_notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                    <textarea id="checkout_notes" name="checkout_notes" rows="3" placeholder="Any special notes for check-out..."
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"></textarea>
                 </div>
                 
-                <button type="submit" name="checkout" class="btn btn-primary">
-                    <i class="fas fa-door-closed"></i> Complete Check-out
+                <button type="submit" name="checkout" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                    <i class="fas fa-door-closed"></i>
+                    <span>Complete Check-out</span>
                 </button>
             </form>
         </div>
     </div>
 
-    <style>
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 2rem;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            right: 15px;
-            top: 10px;
-        }
-
-        .close:hover {
-            color: #e74c3c;
-        }
-
-        .guest-info {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .status-checked_in { background: #d1ecf1; color: #0c5460; }
-        .status-checked_out { background: #d4edda; color: #155724; }
-    </style>
-
     <script>
         function showCheckinModal(reservationId, guestName, roomNumber) {
             document.getElementById('checkin_reservation_id').value = reservationId;
             document.getElementById('checkin_guest_info').innerHTML = `
-                <div class="guest-info">
-                    <h4>Guest: ${guestName}</h4>
-                    <p>Room: ${roomNumber}</p>
-                    <p>Check-in Time: ${new Date().toLocaleString()}</p>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-2">Guest: ${guestName}</h4>
+                    <p class="text-sm text-gray-600 mb-1">Room: ${roomNumber}</p>
+                    <p class="text-sm text-gray-600">Check-in Time: ${new Date().toLocaleString()}</p>
                 </div>
             `;
-            document.getElementById('checkinModal').style.display = 'block';
+            document.getElementById('checkinModal').classList.remove('hidden');
         }
 
         function showCheckoutModal(reservationId, guestName, roomNumber) {
             document.getElementById('checkout_reservation_id').value = reservationId;
             document.getElementById('checkout_guest_info').innerHTML = `
-                <div class="guest-info">
-                    <h4>Guest: ${guestName}</h4>
-                    <p>Room: ${roomNumber}</p>
-                    <p>Check-out Time: ${new Date().toLocaleString()}</p>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-2">Guest: ${guestName}</h4>
+                    <p class="text-sm text-gray-600 mb-1">Room: ${roomNumber}</p>
+                    <p class="text-sm text-gray-600">Check-out Time: ${new Date().toLocaleString()}</p>
                 </div>
             `;
-            document.getElementById('checkoutModal').style.display = 'block';
+            document.getElementById('checkoutModal').classList.remove('hidden');
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            document.getElementById(modalId).classList.add('hidden');
         }
 
         // Close modal when clicking outside
         window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
+            if (event.target.classList.contains('bg-black')) {
+                event.target.classList.add('hidden');
             }
         }
     </script>

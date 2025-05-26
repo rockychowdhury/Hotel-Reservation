@@ -68,7 +68,6 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Home</a>
-                    <a href="#rooms" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Rooms</a>
                     <a href="#services" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Services</a>
                     <a href="#about" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">About</a>
                     <a href="#contact" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Contact</a>
@@ -88,7 +87,6 @@
         <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Home</a>
-                <a href="#rooms" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Rooms</a>
                 <a href="#services" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Services</a>
                 <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">About</a>
                 <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Contact</a>
@@ -119,112 +117,7 @@
         </div>
     </section>
 
-    <!-- Quick Booking Widget -->
-    <section id="booking" class="py-20 bg-gradient-to-r from-gray-50 to-blue-50 -mt-20 relative z-20">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12 transform -translate-y-10">
-                <h2 class="text-3xl md:text-4xl font-bold text-center text-dark mb-8">Quick Reservation</h2>
-                <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="quickBookingForm">
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Check-in Date</label>
-                        <input type="date" name="checkin" required 
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Check-out Date</label>
-                        <input type="date" name="checkout" required 
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Guests</label>
-                        <select name="guests" 
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
-                            <option value="1">1 Guest</option>
-                            <option value="2">2 Guests</option>
-                            <option value="3">3 Guests</option>
-                            <option value="4">4 Guests</option>
-                            <option value="5">5+ Guests</option>
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">Room Type</label>
-                        <select name="room_type" required 
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors bg-gray-50 focus:bg-white">
-                            <option value="">Select Room</option>
-                            <option value="1">Single Room - $99/night</option>
-                            <option value="2">Double Room - $149/night</option>
-                            <option value="3">Suite - $299/night</option>
-                            <option value="4">Family Room - $199/night</option>
-                            <option value="5">Presidential Suite - $599/night</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2 lg:col-span-4">
-                        <button type="button" onclick="window.location.href='reservation.php'" 
-                                class="w-full bg-gradient-to-r from-primary to-red-600 text-white py-4 rounded-xl text-lg font-semibold hover:from-red-600 hover:to-primary transition-all duration-300 transform hover:scale-105 shadow-lg">
-                            <i class="fas fa-search mr-2"></i>Check Availability
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
 
-    <!-- Room Types Preview -->
-    <section id="rooms" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-4">Our Luxurious Rooms</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Experience comfort and elegance in our carefully designed accommodations</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Single Room -->
-                <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                    <div class="h-64 bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
-                        <i class="fas fa-bed text-6xl text-white"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold text-dark mb-2">Single Room</h3>
-                        <p class="text-gray-600 mb-4">Perfect for solo travelers seeking comfort and style</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-3xl font-bold text-primary">$99<span class="text-sm text-gray-500">/night</span></span>
-                            <a href="rooms.php" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors">View Details</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Double Room -->
-                <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                    <div class="h-64 bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
-                        <i class="fas fa-bed text-6xl text-white"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold text-dark mb-2">Double Room</h3>
-                        <p class="text-gray-600 mb-4">Spacious accommodation for couples or friends</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-3xl font-bold text-primary">$149<span class="text-sm text-gray-500">/night</span></span>
-                            <a href="rooms.php" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors">View Details</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Suite -->
-                <div class="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                    <div class="h-64 bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
-                        <i class="fas fa-crown text-6xl text-white"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold text-dark mb-2">Luxury Suite</h3>
-                        <p class="text-gray-600 mb-4">Ultimate luxury with premium amenities</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-3xl font-bold text-primary">$299<span class="text-sm text-gray-500">/night</span></span>
-                            <a href="rooms.php" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Management System Services -->
     <section id="services" class="py-20 bg-gradient-to-r from-gray-50 to-blue-50">
@@ -300,18 +193,6 @@
                     </div>
                 </div>
 
-                <!-- Reports & Analytics -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group">
-                    <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-chart-bar text-2xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-dark mb-4">Reports & Analytics</h3>
-                    <p class="text-gray-600 mb-6">Detailed insights and performance analytics</p>
-                    <div class="flex items-center text-indigo-600 font-semibold">
-                        <span>View Reports</span>
-                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
-                    </div>
-                </div>
             </div>
         </div>
     </section>

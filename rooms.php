@@ -104,300 +104,151 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Management - Luxury Haven Hotel</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .room-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        'luxury-gold': '#D4AF37',
+                        'luxury-navy': '#1E3A8A',
+                        'luxury-gray': '#6B7280',
+                    }
+                }
+            }
         }
-        
-        .room-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        
-        .room-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        
-        .room-card.available { border-color: #27ae60; }
-        .room-card.occupied { border-color: #e74c3c; }
-        .room-card.maintenance { border-color: #f39c12; }
-        .room-card.reserved { border-color: #3498db; }
-        
-        .room-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            text-align: center;
-        }
-        
-        .room-number {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .room-type {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .room-body {
-            padding: 1.5rem;
-        }
-        
-        .room-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .info-item {
-            text-align: center;
-            padding: 0.8rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .info-item i {
-            display: block;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: #e74c3c;
-        }
-        
-        .info-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.2rem;
-        }
-        
-        .info-value {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .amenities-list {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-        
-        .amenities-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-        }
-        
-        .amenities-text {
-            font-size: 0.9rem;
-            color: #666;
-            line-height: 1.5;
-        }
-        
-        .room-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-        }
-        
-        .filters-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            align-items: end;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-        }
-        
-        .stat-card.available::before { background: #27ae60; }
-        .stat-card.occupied::before { background: #e74c3c; }
-        .stat-card.maintenance::before { background: #f39c12; }
-        .stat-card.reserved::before { background: #3498db; }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            color: #666;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        
-        .quick-actions {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover {
-            color: #e74c3c;
-        }
-    </style>
+    </script>
 </head>
-<body>
+<body class="bg-gray-50 font-sans">
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-hotel"></i>
-                <span>Luxury Haven</span>
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-hotel text-2xl text-luxury-gold"></i>
+                    <span class="text-xl font-bold text-gray-900">Luxury Haven</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                        <a href="reservation.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Reservations</a>
+                        <a href="rooms.php" class="bg-luxury-gold text-white px-3 py-2 rounded-md text-sm font-medium">Rooms</a>
+                        <a href="guests.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Guests</a>
+                        <a href="billing.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Billing</a>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-luxury-gold focus:outline-none focus:text-luxury-gold">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
-            <ul class="nav-menu">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="reservation.php">Reservations</a></li>
-                <li><a href="rooms.php" style="color: #e74c3c;">Rooms</a></li>
-                <li><a href="guests.php">Guests</a></li>
-                <li><a href="billing.php">Billing</a></li>
-            </ul>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="reservation.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Reservations</a>
+                <a href="rooms.php" class="bg-luxury-gold text-white block px-3 py-2 rounded-md text-base font-medium">Rooms</a>
+                <a href="guests.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Guests</a>
+                <a href="billing.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Billing</a>
             </div>
         </div>
     </nav>
 
-    <div class="container" style="margin-top: 120px;">
-        <div class="form-title">
-            <i class="fas fa-bed"></i> Room Management
+    <div class="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <div class="flex items-center space-x-3 mb-2">
+                <i class="fas fa-bed text-3xl text-luxury-gold"></i>
+                <h1 class="text-3xl font-bold text-gray-900">Room Management</h1>
+            </div>
+            <p class="text-gray-600">Manage room status, amenities, and view detailed information</p>
         </div>
 
         <!-- Success/Error Messages -->
         <?php if (isset($success_message)): ?>
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i> <?php echo $success_message; ?>
+            <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3">
+                <i class="fas fa-check-circle text-green-500"></i>
+                <span class="text-green-800"><?php echo $success_message; ?></span>
             </div>
         <?php endif; ?>
 
         <?php if (isset($error_message)): ?>
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i> <?php echo $error_message; ?>
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
+                <i class="fas fa-exclamation-circle text-red-500"></i>
+                <span class="text-red-800"><?php echo $error_message; ?></span>
             </div>
         <?php endif; ?>
 
         <!-- Room Statistics -->
-        <div class="stats-grid">
-            <div class="stat-card available">
-                <div class="stat-number"><?php echo isset($status_counts['available']) ? $status_counts['available'] : 0; ?></div>
-                <div class="stat-label">Available</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-gray-900 mb-2"><?php echo isset($status_counts['available']) ? $status_counts['available'] : 0; ?></div>
+                    <div class="text-sm text-gray-600 uppercase font-medium">Available</div>
+                </div>
             </div>
-            <div class="stat-card occupied">
-                <div class="stat-number"><?php echo isset($status_counts['occupied']) ? $status_counts['occupied'] : 0; ?></div>
-                <div class="stat-label">Occupied</div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-gray-900 mb-2"><?php echo isset($status_counts['occupied']) ? $status_counts['occupied'] : 0; ?></div>
+                    <div class="text-sm text-gray-600 uppercase font-medium">Occupied</div>
+                </div>
             </div>
-            <div class="stat-card maintenance">
-                <div class="stat-number"><?php echo isset($status_counts['maintenance']) ? $status_counts['maintenance'] : 0; ?></div>
-                <div class="stat-label">Maintenance</div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-orange-500"></div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-gray-900 mb-2"><?php echo isset($status_counts['maintenance']) ? $status_counts['maintenance'] : 0; ?></div>
+                    <div class="text-sm text-gray-600 uppercase font-medium">Maintenance</div>
+                </div>
             </div>
-            <div class="stat-card reserved">
-                <div class="stat-number"><?php echo isset($status_counts['reserved']) ? $status_counts['reserved'] : 0; ?></div>
-                <div class="stat-label">Reserved</div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-gray-900 mb-2"><?php echo isset($status_counts['reserved']) ? $status_counts['reserved'] : 0; ?></div>
+                    <div class="text-sm text-gray-600 uppercase font-medium">Reserved</div>
+                </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="quick-actions">
-            <button class="btn btn-primary" onclick="showAllRooms()">
-                <i class="fas fa-eye"></i> Show All Rooms
+        <div class="flex flex-wrap gap-3 mb-8">
+            <button onclick="showAllRooms()" class="bg-luxury-gold hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                <i class="fas fa-eye"></i>
+                <span>Show All Rooms</span>
             </button>
-            <button class="btn btn-secondary" onclick="filterByStatus('available')">
-                <i class="fas fa-check"></i> Available Only
+            <button onclick="filterByStatus('available')" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                <i class="fas fa-check"></i>
+                <span>Available Only</span>
             </button>
-            <button class="btn btn-secondary" onclick="filterByStatus('occupied')">
-                <i class="fas fa-user"></i> Occupied Only
+            <button onclick="filterByStatus('occupied')" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                <i class="fas fa-user"></i>
+                <span>Occupied Only</span>
             </button>
         </div>
 
         <!-- Filters -->
-        <div class="filters-section">
-            <h3 style="margin-bottom: 1.5rem; color: #2c3e50;">
-                <i class="fas fa-filter"></i> Filter Rooms
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-6 flex items-center space-x-2">
+                <i class="fas fa-filter text-luxury-gold"></i>
+                <span>Filter Rooms</span>
             </h3>
-            <form method="GET" class="filters-grid">
-                <div class="form-group">
-                    <label>Room Status</label>
-                    <select name="status">
+            <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Room Status</label>
+                    <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold">
                         <option value="">All Statuses</option>
                         <option value="available" <?php echo $status_filter === 'available' ? 'selected' : ''; ?>>Available</option>
                         <option value="occupied" <?php echo $status_filter === 'occupied' ? 'selected' : ''; ?>>Occupied</option>
@@ -406,9 +257,9 @@ try {
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label>Room Type</label>
-                    <select name="type">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
+                    <select name="type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold">
                         <option value="">All Types</option>
                         <?php foreach ($room_types as $type): ?>
                             <option value="<?php echo $type['type_id']; ?>" <?php echo $type_filter == $type['type_id'] ? 'selected' : ''; ?>>
@@ -418,9 +269,9 @@ try {
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label>Floor</label>
-                    <select name="floor">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Floor</label>
+                    <select name="floor" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold">
                         <option value="">All Floors</option>
                         <?php foreach ($floors as $floor): ?>
                             <option value="<?php echo $floor; ?>" <?php echo $floor_filter == $floor ? 'selected' : ''; ?>>
@@ -430,79 +281,102 @@ try {
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search"></i> Apply Filters
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-luxury-gold hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+                        <i class="fas fa-search"></i>
+                        <span>Apply Filters</span>
                     </button>
                 </div>
             </form>
         </div>
 
         <!-- Rooms Grid -->
-        <div class="room-grid">
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
             <?php foreach ($rooms as $room): ?>
-                <div class="room-card <?php echo $room['status']; ?>">
-                    <div class="room-header">
-                        <div class="room-number">Room <?php echo htmlspecialchars($room['room_number']); ?></div>
-                        <div class="room-type"><?php echo htmlspecialchars($room['type_name']); ?></div>
+                <div class="bg-white rounded-xl shadow-sm border-2 <?php 
+                    echo $room['status'] === 'available' ? 'border-green-200 hover:border-green-300' : 
+                        ($room['status'] === 'occupied' ? 'border-red-200 hover:border-red-300' : 
+                        ($room['status'] === 'maintenance' ? 'border-orange-200 hover:border-orange-300' : 
+                        'border-blue-200 hover:border-blue-300')); 
+                ?> overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <!-- Room Header -->
+                    <div class="bg-gradient-to-r from-gray-800 to-gray-700 text-white p-6 text-center">
+                        <div class="text-2xl font-bold mb-1">Room <?php echo htmlspecialchars($room['room_number']); ?></div>
+                        <div class="text-gray-200 text-lg"><?php echo htmlspecialchars($room['type_name']); ?></div>
                     </div>
                     
-                    <div class="room-body">
-                        <div class="room-info">
-                            <div class="info-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <div class="info-label">Price per Night</div>
-                                <div class="info-value">$<?php echo number_format($room['base_price'], 2); ?></div>
+                    <!-- Room Body -->
+                    <div class="p-6">
+                        <!-- Room Info Grid -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                <i class="fas fa-dollar-sign text-luxury-gold text-lg mb-2 block"></i>
+                                <div class="text-xs text-gray-600 mb-1">Price per Night</div>
+                                <div class="font-semibold text-gray-900">$<?php echo number_format($room['base_price'], 2); ?></div>
                             </div>
-                            <div class="info-item">
-                                <i class="fas fa-users"></i>
-                                <div class="info-label">Max Occupancy</div>
-                                <div class="info-value"><?php echo $room['max_occupancy']; ?> guests</div>
+                            <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                <i class="fas fa-users text-luxury-gold text-lg mb-2 block"></i>
+                                <div class="text-xs text-gray-600 mb-1">Max Occupancy</div>
+                                <div class="font-semibold text-gray-900"><?php echo $room['max_occupancy']; ?> guests</div>
                             </div>
-                            <div class="info-item">
-                                <i class="fas fa-building"></i>
-                                <div class="info-label">Floor</div>
-                                <div class="info-value">Floor <?php echo $room['floor_number']; ?></div>
+                            <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                <i class="fas fa-building text-luxury-gold text-lg mb-2 block"></i>
+                                <div class="text-xs text-gray-600 mb-1">Floor</div>
+                                <div class="font-semibold text-gray-900">Floor <?php echo $room['floor_number']; ?></div>
                             </div>
-                            <div class="info-item">
-                                <i class="fas fa-info-circle"></i>
-                                <div class="info-label">Status</div>
-                                <div class="info-value">
-                                    <span class="status-badge status-<?php echo $room['status']; ?>">
+                            <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                <i class="fas fa-info-circle text-luxury-gold text-lg mb-2 block"></i>
+                                <div class="text-xs text-gray-600 mb-1">Status</div>
+                                <div class="font-semibold">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium <?php 
+                                        echo $room['status'] === 'available' ? 'bg-green-100 text-green-800' : 
+                                            ($room['status'] === 'occupied' ? 'bg-red-100 text-red-800' : 
+                                            ($room['status'] === 'maintenance' ? 'bg-orange-100 text-orange-800' : 
+                                            'bg-blue-100 text-blue-800')); 
+                                    ?>">
                                         <?php echo ucfirst($room['status']); ?>
                                     </span>
                                 </div>
                             </div>
                         </div>
                         
+                        <!-- Amenities -->
                         <?php if ($room['amenities']): ?>
-                            <div class="amenities-list">
-                                <div class="amenities-title">
-                                    <i class="fas fa-star"></i> Room Amenities
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-star text-luxury-gold"></i>
+                                    <span class="font-semibold text-gray-900">Room Amenities</span>
                                 </div>
-                                <div class="amenities-text">
+                                <div class="text-gray-700 text-sm">
                                     <?php echo htmlspecialchars($room['amenities']); ?>
                                 </div>
                             </div>
                         <?php endif; ?>
                         
+                        <!-- Description -->
                         <?php if ($room['description']): ?>
-                            <div class="amenities-list">
-                                <div class="amenities-title">
-                                    <i class="fas fa-info"></i> Description
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-info text-luxury-gold"></i>
+                                    <span class="font-semibold text-gray-900">Description</span>
                                 </div>
-                                <div class="amenities-text">
+                                <div class="text-gray-700 text-sm">
                                     <?php echo htmlspecialchars($room['description']); ?>
                                 </div>
                             </div>
                         <?php endif; ?>
                         
-                        <div class="room-actions">
-                            <button class="btn-small btn-edit" onclick="changeStatus(<?php echo $room['room_id']; ?>, '<?php echo $room['status']; ?>')">
-                                <i class="fas fa-edit"></i> Change Status
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-2 pt-4 border-t border-gray-200">
+                            <button onclick="changeStatus(<?php echo $room['room_id']; ?>, '<?php echo $room['status']; ?>')" 
+                                    class="flex-1 bg-luxury-gold hover:bg-yellow-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-edit"></i>
+                                <span>Change Status</span>
                             </button>
-                            <button class="btn-small btn-view" onclick="editAmenities(<?php echo $room['room_id']; ?>, '<?php echo htmlspecialchars($room['amenities'], ENT_QUOTES); ?>')">
-                                <i class="fas fa-cog"></i> Edit Amenities
+                            <button onclick="editAmenities(<?php echo $room['room_id']; ?>, '<?php echo htmlspecialchars($room['amenities'], ENT_QUOTES); ?>')" 
+                                    class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-cog"></i>
+                                <span>Edit Amenities</span>
                             </button>
                         </div>
                     </div>
@@ -510,27 +384,31 @@ try {
             <?php endforeach; ?>
             
             <?php if (empty($rooms)): ?>
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
-                    <i class="fas fa-bed" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                    <h3>No rooms found</h3>
-                    <p>Try adjusting your filters to see more results.</p>
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-bed text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">No rooms found</h3>
+                    <p class="text-gray-600">Try adjusting your filters to see more results.</p>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 
     <!-- Status Change Modal -->
-    <div id="statusModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('statusModal')">&times;</span>
-            <h3 style="margin-bottom: 1.5rem; color: #2c3e50;">Change Room Status</h3>
+    <div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Change Room Status</h3>
+                <button onclick="closeModal('statusModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
             <form method="POST">
                 <input type="hidden" name="action" value="update_status">
                 <input type="hidden" name="room_id" id="statusRoomId">
                 
-                <div class="form-group">
-                    <label>New Status</label>
-                    <select name="status" id="statusSelect" required>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">New Status</label>
+                    <select name="status" id="statusSelect" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold">
                         <option value="available">Available</option>
                         <option value="occupied">Occupied</option>
                         <option value="maintenance">Maintenance</option>
@@ -538,31 +416,45 @@ try {
                     </select>
                 </div>
                 
-                <div style="text-align: right; margin-top: 1.5rem;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('statusModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Status</button>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('statusModal')" class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-luxury-gold hover:bg-yellow-600 text-white rounded-lg font-medium transition-colors">
+                        Update Status
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Amenities Edit Modal -->
-    <div id="amenitiesModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('amenitiesModal')">&times;</span>
-            <h3 style="margin-bottom: 1.5rem; color: #2c3e50;">Edit Room Amenities</h3>
+    <div id="amenitiesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Edit Room Amenities</h3>
+                <button onclick="closeModal('amenitiesModal')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
             <form method="POST">
                 <input type="hidden" name="action" value="update_amenities">
                 <input type="hidden" name="room_id" id="amenitiesRoomId">
                 
-                <div class="form-group">
-                    <label>Amenities (separate with commas)</label>
-                    <textarea name="amenities" id="amenitiesText" rows="4" placeholder="WiFi, TV, AC, Private Bath, Mini Fridge..."></textarea>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Amenities (separate with commas)</label>
+                    <textarea name="amenities" id="amenitiesText" rows="4" 
+                              placeholder="WiFi, TV, AC, Private Bath, Mini Fridge..."
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-luxury-gold"></textarea>
                 </div>
                 
-                <div style="text-align: right; margin-top: 1.5rem;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('amenitiesModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Amenities</button>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('amenitiesModal')" class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-luxury-gold hover:bg-yellow-600 text-white rounded-lg font-medium transition-colors">
+                        Update Amenities
+                    </button>
                 </div>
             </form>
         </div>
@@ -570,29 +462,34 @@ try {
 
     <script>
         // Mobile navigation toggle
-        const navToggle = document.querySelector('.nav-toggle');
-        const navMenu = document.querySelector('.nav-menu');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            navToggle.classList.toggle('active');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
         });
 
         // Modal functions
         function changeStatus(roomId, currentStatus) {
             document.getElementById('statusRoomId').value = roomId;
             document.getElementById('statusSelect').value = currentStatus;
-            document.getElementById('statusModal').style.display = 'block';
+            const modal = document.getElementById('statusModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
         function editAmenities(roomId, currentAmenities) {
             document.getElementById('amenitiesRoomId').value = roomId;
             document.getElementById('amenitiesText').value = currentAmenities;
-            document.getElementById('amenitiesModal').style.display = 'block';
+            const modal = document.getElementById('amenitiesModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         // Close modal when clicking outside
@@ -601,10 +498,10 @@ try {
             const amenitiesModal = document.getElementById('amenitiesModal');
             
             if (event.target === statusModal) {
-                statusModal.style.display = 'none';
+                closeModal('statusModal');
             }
             if (event.target === amenitiesModal) {
-                amenitiesModal.style.display = 'none';
+                closeModal('amenitiesModal');
             }
         }
 
@@ -619,7 +516,7 @@ try {
 
         // Auto-hide success/error messages
         setTimeout(function() {
-            const messages = document.querySelectorAll('.success-message, .error-message');
+            const messages = document.querySelectorAll('.bg-green-50, .bg-red-50');
             messages.forEach(function(message) {
                 message.style.transition = 'opacity 0.5s ease';
                 message.style.opacity = '0';
