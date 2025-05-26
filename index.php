@@ -67,60 +67,18 @@
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Home</a>
-                    <a href="#services" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Services</a>
-                    <a href="#about" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">About</a>
-                    <a href="#contact" class="text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Contact</a>
                     <a href="reservation.php" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg">Book Now</a>
                 </div>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary focus:outline-none">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
             </div>
         </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Home</a>
-                <a href="#services" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Services</a>
-                <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">About</a>
-                <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-primary transition-colors">Contact</a>
-                <a href="reservation.php" class="block mx-3 mt-3 bg-primary text-white text-center py-2 rounded-full hover:bg-red-600 transition-colors">Book Now</a>
-            </div>
-        </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative">
-        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
-        <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in-up">Welcome to <span class="block gradient-text">Luxury Haven</span></h1>
-            <p class="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in-up animation-delay-200">Experience unparalleled comfort and luxury in the heart of the city</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-400">
-                <a href="#booking" class="bg-primary hover:bg-red-600 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl">
-                    Book Your Stay
-                </a>
-                <a href="#rooms" class="border-2 border-white text-white hover:bg-white hover:text-dark px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
-                    View Rooms
-                </a>
-            </div>
-        </div>
-        
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
-            <div class="w-6 h-6 border-r-2 border-b-2 border-white transform rotate-45"></div>
-        </div>
-    </section>
 
 
 
     <!-- Management System Services -->
-    <section id="services" class="py-20 bg-gradient-to-r from-gray-50 to-blue-50">
+    <section id="services" class="py-20 mt-20 bg-gradient-to-r from-gray-50 to-blue-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-dark mb-4">Hotel Management System</h2>
@@ -197,65 +155,7 @@
         </div>
     </section>
 
-    <!-- Hotel Features -->
-    <section id="about" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-dark mb-4">Why Choose Luxury Haven?</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover the amenities and services that make us the preferred choice</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center group">
-                    <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-wifi text-3xl text-white"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-dark mb-2">Free Wi-Fi</h4>
-                    <p class="text-gray-600">High-speed internet throughout the hotel premises</p>
-                </div>
 
-                <div class="text-center group">
-                    <div class="w-20 h-20 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-swimming-pool text-3xl text-white"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-dark mb-2">Swimming Pool</h4>
-                    <p class="text-gray-600">Relax in our beautiful rooftop infinity pool</p>
-                </div>
-
-                <div class="text-center group">
-                    <div class="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-utensils text-3xl text-white"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-dark mb-2">Fine Dining</h4>
-                    <p class="text-gray-600">World-class cuisine at our award-winning restaurant</p>
-                </div>
-
-                <div class="text-center group">
-                    <div class="w-20 h-20 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-car text-3xl text-white"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-dark mb-2">Valet Parking</h4>
-                    <p class="text-gray-600">Complimentary valet parking for all guests</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="py-20 bg-gradient-to-r from-primary to-red-600 text-white">
-        <div class="max-w-4xl mx-auto text-center px-4">
-            <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready for Your Perfect Stay?</h2>
-            <p class="text-xl mb-8 opacity-90">Book now and experience luxury like never before</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="reservation.php" class="bg-white text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    Make Reservation
-                </a>
-                <a href="#contact" class="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105">
-                    Contact Us
-                </a>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer id="contact" class="bg-dark text-white py-16">
@@ -293,7 +193,6 @@
                         <li><a href="guests.php" class="text-gray-300 hover:text-primary transition-colors">Guest Services</a></li>
                         <li><a href="checkin.php" class="text-gray-300 hover:text-primary transition-colors">Check-in/Check-out</a></li>
                         <li><a href="billing.php" class="text-gray-300 hover:text-primary transition-colors">Billing</a></li>
-                        <li><a href="#about" class="text-gray-300 hover:text-primary transition-colors">About Us</a></li>
                     </ul>
                 </div>
 
@@ -321,21 +220,6 @@
                 </div>
             </div>
 
-            <!-- Newsletter Signup -->
-            <div class="border-t border-gray-600 mt-12 pt-8">
-                <div class="max-w-md mx-auto text-center">
-                    <h4 class="text-xl font-bold mb-4">Stay Updated</h4>
-                    <p class="text-gray-300 mb-4">Subscribe to our newsletter for exclusive offers and updates</p>
-                    <form class="flex flex-col sm:flex-row gap-3">
-                        <input type="email" placeholder="Enter your email" 
-                               class="flex-1 px-4 py-3 rounded-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 focus:border-primary focus:outline-none transition-colors">
-                        <button type="submit" 
-                                class="bg-primary hover:bg-red-600 text-white px-6 py-3 rounded-full font-semibold transition-colors whitespace-nowrap">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
-            </div>
 
             <!-- Bottom Bar -->
             <div class="border-t border-gray-600 mt-12 pt-8">

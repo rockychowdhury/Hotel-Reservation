@@ -185,20 +185,28 @@ $checkout_result = mysqli_query($conn, $checkout_query);
 </head>
 <body class="bg-gray-50 font-poppins min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <nav class="bg-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-3">
                     <i class="fas fa-hotel text-2xl text-blue-600"></i>
-                    <span class="text-xl font-bold text-gray-800">Luxury Haven</span>
+                    <a href="index.php" class="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors">
+                        Luxury Haven
+                    </a>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="index.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
-                    <a href="reservation.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Reservations</a>
-                    <a href="checkin.php" class="text-blue-600 border-b-2 border-blue-600 px-3 py-2 text-sm font-medium">Check-in/Out</a>
-                    <a href="rooms.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Rooms</a>
-                    <a href="guests.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Guests</a>
-                    <a href="billing.php" class="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Billing</a>
+                    <a href="index.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
+                    <a href="reservation.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Reservations</a>
+                    <a href="checkin.php" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Check-in/Out</a>
+                    <a href="rooms.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Rooms</a>
+                    <a href="guests.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Guests</a>
+                    <a href="billing.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Billing</a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
             </div>
         </div>

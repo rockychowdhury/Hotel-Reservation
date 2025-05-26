@@ -97,16 +97,38 @@ $stats = mysqli_fetch_assoc($stats_result);
     </style>
 </head>
 <body class="font-poppins">
-    <div class="gradient-bg min-h-screen">
+        <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-hotel text-2xl text-blue-600"></i>
+                    <a href="index.php" class="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors">
+                        Luxury Haven
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
+                    <a href="reservation.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Reservations</a>
+                    <a href="checkin.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Check-in/Out</a>
+                    <a href="rooms.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Rooms</a>
+                    <a href="guests.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Guests</a>
+                    <a href="billing.php" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Billing</a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="gradient-bg min-h-screen mt-20">
         <div class="max-w-7xl mx-auto p-8">
-            <!-- Back Button -->
-            <a href="index.php" class="inline-flex items-center gap-2 px-4 py-2 bg-primary bg-opacity-20 text-dark rounded-lg hover:bg-opacity-30 transition-all duration-300 glass-effect border border-white border-opacity-30 mb-8">
-                <i class="fas fa-arrow-left"></i> 
-                <span>Back to Dashboard</span>
-            </a>
+            
 
             <!-- Header -->
-            <div class="text-center mb-12 text-primary">
+            <div class="text-center mb-12  text-primary">
                 <h1 class="text-4xl font-bold mb-2 drop-shadow-lg">
                     <i class="fas fa-receipt text-primary mr-3"></i>Billing & Payment Management
                 </h1>

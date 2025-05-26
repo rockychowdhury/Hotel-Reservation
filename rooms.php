@@ -126,42 +126,29 @@ try {
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-3">
-                    <i class="fas fa-hotel text-2xl text-luxury-gold"></i>
-                    <span class="text-xl font-bold text-gray-900">Luxury Haven</span>
+                    <i class="fas fa-hotel text-2xl text-blue-600"></i>
+                    <a href="index.php" class="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors">
+                        Luxury Haven
+                    </a>
                 </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="index.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
-                        <a href="reservation.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Reservations</a>
-                        <a href="rooms.php" class="bg-luxury-gold text-white px-3 py-2 rounded-md text-sm font-medium">Rooms</a>
-                        <a href="guests.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Guests</a>
-                        <a href="billing.php" class="text-gray-600 hover:text-luxury-gold px-3 py-2 rounded-md text-sm font-medium transition-colors">Billing</a>
-                    </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
+                    <a href="reservation.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Reservations</a>
+                    <a href="checkin.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Check-in/Out</a>
+                    <a href="rooms.php" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Rooms</a>
+                    <a href="guests.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Guests</a>
+                    <a href="billing.php" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Billing</a>
                 </div>
-                
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-600 hover:text-luxury-gold focus:outline-none focus:text-luxury-gold">
+                    <button class="text-gray-700 hover:text-blue-600">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="index.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                <a href="reservation.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Reservations</a>
-                <a href="rooms.php" class="bg-luxury-gold text-white block px-3 py-2 rounded-md text-base font-medium">Rooms</a>
-                <a href="guests.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Guests</a>
-                <a href="billing.php" class="text-gray-600 hover:text-luxury-gold block px-3 py-2 rounded-md text-base font-medium">Billing</a>
             </div>
         </div>
     </nav>
