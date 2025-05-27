@@ -400,7 +400,6 @@ $reservations = $reservations_stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guests</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -472,10 +471,6 @@ $reservations = $reservations_stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?php echo $status_class; ?>">
                                             <?php echo ucfirst(str_replace('_', ' ', $reservation['status'])); ?>
                                         </span>
-                                    </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <?php echo date('M d, Y', strtotime($reservation['created_at'])); ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
